@@ -159,7 +159,32 @@
 
     /* Equipment Table Panel */
     .table-panel { background: var(--card-bg); padding: 20px; border-radius: 8px; border: 1px solid var(--border-color); overflow-x: auto; }
-    .table-panel h2 { font-size: 16px; color: var(--navy); margin-bottom: 15px; }
+    .table-panel-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 15px;
+      flex-wrap: wrap;
+      gap: 10px;
+    }
+    .table-panel h2 { font-size: 16px; color: var(--navy); margin: 0; }
+    
+    .filter-container {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      font-size: 13px;
+      font-weight: bold;
+      color: var(--navy);
+    }
+    .filter-container select {
+      padding: 5px 10px;
+      border: 1px solid var(--border-color);
+      border-radius: 4px;
+      font-size: 12px;
+      font-weight: bold;
+    }
+
     table { width: 100%; border-collapse: collapse; font-size: 13px; }
     th, td { padding: 10px; text-align: left; border-bottom: 1px solid var(--border-color); vertical-align: middle; }
     th { background-color: #f8f9fa; color: var(--navy); }
@@ -422,7 +447,21 @@
 
       <!-- Table: Equipment List -->
       <div class="table-panel">
-        <h2>Equipment Inventory Table</h2>
+        <div class="table-panel-header">
+          <h2>Equipment Inventory Table</h2>
+          <div class="filter-container">
+            <label for="dept-filter">Filter by Dept:</label>
+            <select id="dept-filter" onchange="render()">
+              <option value="All">All Departments</option>
+              <option value="Mechanics">Mechanics</option>
+              <option value="Denting">Denting</option>
+              <option value="Blacksmith">Blacksmith</option>
+              <option value="Painting">Painting</option>
+              <option value="Electric">Electric</option>
+              <option value="Testing">Testing</option>
+            </select>
+          </div>
+        </div>
         <table>
           <thead>
             <tr>
@@ -629,15 +668,21 @@
       }
     }
 
-    // Render Tables, Metrics and Annual Cumulative Totals
+    // Render Tables, Metrics and Annual Cumulative Totals with Department Filtering
     function render() {
-      // 1. Render Equipment Table & Current Status Counts
       tableBody.innerHTML = "";
       let counts = { Ready: 0, "In Progress": 0, Waiting: 0, Delay: 0, External: 0, Dispatched: 0 };
 
+      // Global status counts
       equipmentList.forEach((item) => {
         if (counts[item.status] !== undefined) counts[item.status]++;
+      });
 
+      // Get selected department filter value
+      const selectedDept = document.getElementById("dept-filter").value;
+      const filteredEquipment = selectedDept === "All" ? equipmentList : equipmentList.filter(item => item.dept === selectedDept);
+
+      filteredEquipment.forEach((item) => {
         const statusClass = item.status.replace(/\s+/g, '-');
         const icon = deptIcons[item.dept] || "🔧";
         const reportDisplay = item.report ? `<span class="eq-report-text">📝 ${item.report}</span>` : '';
@@ -706,7 +751,6 @@
       let annualExited = 0;
       let annualReady = 0;
 
-      // Sum from monthly logged records belonging to year 2026
       monthlyStats.forEach(m => {
         if (m.month && m.month.startsWith("2026")) {
           annualEntered += (Number(m.received) || 0);
@@ -715,26 +759,13 @@
         }
       });
 
-      // Add active items from equipment inventory list entered in 2026 if not already captured via monthly logs
-      equipmentList.forEach(eq => {
-        if (eq.entryDate && eq.entryDate.startsWith("2026")) {
-          // You can also add custom verification if needed, or aggregate directly from equipment table entries
-        }
-      });
-
-      // Alternatively, compute directly from current inventory items plus monthly logs for absolute comprehensive totals
       let invEntered2026 = equipmentList.filter(eq => eq.entryDate && eq.entryDate.startsWith("2026")).length;
       let invExited2026 = equipmentList.filter(eq => eq.exitDate && eq.exitDate.startsWith("2026")).length;
       let invReady2026 = equipmentList.filter(eq => (eq.status === "Ready" || eq.status === "Dispatched") && eq.entryDate && eq.entryDate.startsWith("2026")).length;
 
-      // Total summation combining logs and direct inventory list for 2026
-      let totalAnnualEntered = Math.max(annualEntered, invEntered2026);
-      let totalAnnualExited = Math.max(annualExited, invExited2026);
-      let totalAnnualReady = Math.max(annualReady, invReady2026);
-
-      document.getElementById("annual-entered-count").innerText = totalAnnualEntered;
-      document.getElementById("annual-exited-count").innerText = totalAnnualExited;
-      document.getElementById("annual-ready-count").innerText = totalAnnualReady;
+      document.getElementById("annual-entered-count").innerText = Math.max(annualEntered, invEntered2026);
+      document.getElementById("annual-exited-count").innerText = Math.max(annualExited, invExited2026);
+      document.getElementById("annual-ready-count").innerText = Math.max(annualReady, invReady2026);
 
       applyPermissions();
     }
