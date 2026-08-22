@@ -1,97 +1,97 @@
-<!-- قم بتحديث جزء الـ Header Control والـ Filter داخل الـ HTML كالتالي: -->
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>PMV Workshop Plan</title>
+  <style>
+    body { font-family: sans-serif; background: #f4f6f8; padding: 20px; }
+    .card { background: #fff; padding: 20px; border-radius: 8px; box-shadow: 0 2px 5px rgba(0,0,0,0.1); margin-bottom: 20px; }
+    .filter-bar { display: flex; gap: 10px; margin-bottom: 20px; flex-wrap: wrap; }
+    input, select { padding: 8px; border: 1px solid #ccc; border-radius: 4px; }
+    table { width: 100%; border-collapse: collapse; }
+    th, td { padding: 12px; border-bottom: 1px solid #ddd; text-align: left; }
+    .status-badge { padding: 4px 8px; border-radius: 12px; font-size: 12px; }
+  </style>
+</head>
+<body>
 
-<!-- 1. تحديث قائمة الأقسام في نموذج الإضافة -->
-<div class="form-group">
-  <label>Department / Workshop Stage</label>
-  <select id="eq-dept" required>
-    <option value="Mechanics">Mechanics</option>
-    <option value="Denting">Denting</option>
-    <option value="Blacksmith">Blacksmith</option>
-    <option value="Welding">Welding (الحدادة)</option>
-    <option value="Painting">Painting</option>
-    <option value="Electric">Electric</option>
-    <option value="Testing">Testing</option>
-  </select>
+<div class="card">
+  <h2>Add Equipment</h2>
+  <form id="eq-form" style="display:flex; gap:10px; flex-wrap:wrap;">
+    <input type="text" id="name" placeholder="Name" required>
+    <input type="text" id="code" placeholder="Code" required>
+    <select id="dept">
+      <option value="Mechanics">Mechanics</option>
+      <option value="Welding">Welding</option>
+      <option value="Electric">Electric</option>
+    </select>
+    <select id="status">
+      <option value="Ready">Ready</option>
+      <option value="In Progress">In Progress</option>
+    </select>
+    <button type="submit">Add</button>
+  </form>
 </div>
 
-<!-- 2. تحديث قسم الفلترة في الـ Table Panel -->
-<div class="filter-container" style="gap: 15px;">
-  <input type="text" id="code-search" placeholder="Search by Code..." onkeyup="render()" style="padding: 5px; border: 1px solid var(--border-color); border-radius: 4px;">
-  
-  <select id="status-filter" onchange="render()">
-    <option value="All">All Status</option>
-    <option value="Ready">Ready</option>
-    <option value="In Progress">In Progress</option>
-    <option value="Waiting">Waiting</option>
-    <option value="Delay">Delay</option>
-    <option value="Dispatched">Dispatched</option>
-  </select>
+<div class="card">
+  <div class="filter-bar">
+    <input type="text" id="search-code" placeholder="Filter by Code..." oninput="renderTable()">
+    <select id="filter-status" onchange="renderTable()">
+      <option value="All">All Status</option>
+      <option value="Ready">Ready</option>
+      <option value="In Progress">In Progress</option>
+    </select>
+    <select id="filter-dept" onchange="renderTable()">
+      <option value="All">All Depts</option>
+      <option value="Mechanics">Mechanics</option>
+      <option value="Welding">Welding</option>
+      <option value="Electric">Electric</option>
+    </select>
+  </div>
 
-  <select id="dept-filter" onchange="render()">
-    <option value="All">All Departments</option>
-    <option value="Mechanics">Mechanics</option>
-    <option value="Denting">Denting</option>
-    <option value="Blacksmith">Blacksmith</option>
-    <option value="Welding">Welding</option>
-    <option value="Painting">Painting</option>
-    <option value="Electric">Electric</option>
-    <option value="Testing">Testing</option>
-  </select>
+  <table>
+    <thead>
+      <tr><th>Name</th><th>Code</th><th>Dept</th><th>Status</th></tr>
+    </thead>
+    <tbody id="table-body"></tbody>
+  </table>
 </div>
 
 <script>
-// 3. تحديث دالة الـ render لتشمل الفلترة المتعددة
-function render() {
-  tableBody.innerHTML = "";
-  
-  // قيم الفلتر
-  const codeSearch = document.getElementById("code-search").value.toLowerCase();
-  const statusFilter = document.getElementById("status-filter").value;
-  const deptFilter = document.getElementById("dept-filter").value;
+  let data = JSON.parse(localStorage.getItem("pmv_data")) || [];
 
-  // الفلترة
-  const filteredEquipment = equipmentList.filter(item => {
-    const matchCode = item.code.toLowerCase().includes(codeSearch);
-    const matchStatus = (statusFilter === "All" || item.status === statusFilter);
-    const matchDept = (deptFilter === "All" || item.dept === deptFilter);
-    return matchCode && matchStatus && matchDept;
-  });
+  document.getElementById("eq-form").onsubmit = (e) => {
+    e.preventDefault();
+    data.push({
+      name: document.getElementById("name").value,
+      code: document.getElementById("code").value,
+      dept: document.getElementById("dept").value,
+      status: document.getElementById("status").value
+    });
+    localStorage.setItem("pmv_data", JSON.stringify(data));
+    renderTable();
+    e.target.reset();
+  };
 
-  // عرض البيانات المفلترة
-  filteredEquipment.forEach((item) => {
-    const statusClass = item.status.replace(/\s+/g, '-');
-    const icon = deptIcons[item.dept] || "🔧";
+  function renderTable() {
+    const tbody = document.getElementById("table-body");
+    tbody.innerHTML = "";
     
-    const row = document.createElement("tr");
-    row.innerHTML = `
-      <td><strong>${item.name}</strong></td>
-      <td><code><strong>${item.code}</strong></code></td>
-      <td>📅 ${item.entryDate}</td>
-      <td>${item.exitDate || "-"}</td>
-      <td><span class="duration-badge">${calculateDuration(item.entryDate, item.exitDate)}</span></td>
-      <td>${icon} ${item.dept}</td>
-      <td><span class="status-badge status-${statusClass}">${item.status}</span></td>
-      <td class="admin-action-col">
-        <div class="action-btns">
-          <button class="btn-edit" onclick="editEquipment(${item.id})">Edit</button>
-          <button class="btn-delete" onclick="deleteEquipment(${item.id})">Delete</button>
-        </div>
-      </td>
-    `;
-    tableBody.appendChild(row);
-  });
-  
-  // ... باقي الكود كما هو
-}
+    const search = document.getElementById("search-code").value.toLowerCase();
+    const status = document.getElementById("filter-status").value;
+    const dept = document.getElementById("filter-dept").value;
 
-// إضافة الأيقونة في مصفوفة الـ icons
-const deptIcons = {
-  "Mechanics": "🛠️",
-  "Denting": "🔨",
-  "Blacksmith": "⚒️",
-  "Welding": "🔥", 
-  "Painting": "🎨",
-  "Electric": "⚡",
-  "Testing": "🧪"
-};
+    data.filter(item => 
+      (item.code.toLowerCase().includes(search)) &&
+      (status === "All" || item.status === status) &&
+      (dept === "All" || item.dept === dept)
+    ).forEach(item => {
+      tbody.innerHTML += `<tr><td>${item.name}</td><td>${item.code}</td><td>${item.dept}</td><td>${item.status}</td></tr>`;
+    });
+  }
+
+  renderTable();
 </script>
+
+</body>
+</html>
