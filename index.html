@@ -111,6 +111,8 @@
     .form-group textarea { resize: vertical; height: 50px; }
     .btn-add { width: 100%; background: var(--navy); color: #fff; border: none; padding: 10px; border-radius: 4px; font-weight: bold; cursor: pointer; margin-top: 10px; }
     .btn-add:hover { background: #001a2e; }
+    .btn-cancel-edit { width: 100%; background: #7f8c8d; color: #fff; border: none; padding: 8px; border-radius: 4px; font-weight: bold; cursor: pointer; margin-top: 5px; display: none; }
+    .btn-cancel-edit:hover { background: #606f7b; }
 
     /* Equipment Table Panel */
     .table-panel { background: var(--card-bg); padding: 20px; border-radius: 8px; border: 1px solid var(--border-color); overflow-x: auto; }
@@ -135,6 +137,9 @@
     .status-Waiting { background-color: #fef9e7; color: var(--status-waiting); }
     .status-Dispatched { background-color: #f0f3f4; color: var(--status-dispatched); }
 
+    .action-btns { display: flex; gap: 5px; }
+    .btn-edit { background: var(--status-progress); color: white; border: none; padding: 6px 10px; border-radius: 4px; cursor: pointer; font-size: 12px; }
+    .btn-edit:hover { background: #2980b9; }
     .btn-delete { background: var(--status-delay); color: white; border: none; padding: 6px 10px; border-radius: 4px; cursor: pointer; font-size: 12px; }
     .btn-delete:hover { background: #c0392b; }
 
@@ -298,10 +303,11 @@
     <!-- Section 1: Equipment Inventory -->
     <div class="content-grid" id="main-grid">
       
-      <!-- Form: Add Equipment (Admin Only) -->
+      <!-- Form: Add / Edit Equipment (Admin Only) -->
       <div class="form-panel" id="admin-form-panel">
-        <h2>Add New Equipment</h2>
+        <h2 id="form-panel-title">Add New Equipment</h2>
         <form id="equipment-form">
+          <input type="hidden" id="edit-eq-id">
           <div class="form-group">
             <label>Equipment Name</label>
             <input type="text" id="eq-name" placeholder="e.g. Caterpillar Excavator" required>
@@ -344,7 +350,8 @@
               <option value="Dispatched">Dispatched / Exited</option>
             </select>
           </div>
-          <button type="submit" class="btn-add">+ Add Equipment</button>
+          <button type="submit" class="btn-add" id="form-submit-btn">+ Add Equipment</button>
+          <button type="button" class="btn-cancel-edit" id="cancel-edit-btn" onclick="cancelEdit()">Cancel Edit</button>
         </form>
       </div>
 
@@ -458,6 +465,7 @@
 
   <script>
     let currentRole = "admin";
+    let isEditing = false;
 
     // Valid Credentials Configuration
     const USERS = {
@@ -584,7 +592,12 @@
               ${item.status}
             </span>
           </td>
-          <td class="admin-action-col"><button class="btn-delete" onclick="deleteEquipment(${item.id})">Delete</button></td>
+          <td class="admin-action-col">
+            <div class="action-btns">
+              <button class="btn-edit" onclick="editEquipment(${item.id})">Edit</button>
+              <button class="btn-delete" onclick="deleteEquipment(${item.id})">Delete</button>
+            </div>
+          </td>
         `;
         tableBody.appendChild(row);
       });
@@ -689,25 +702,73 @@
       }
     }
 
-    // Add Equipment Event
+    // Add or Update Equipment Form Event
     form.addEventListener("submit", function(e) {
       e.preventDefault();
       
-      const newEquipment = {
-        id: Date.now(),
-        name: document.getElementById("eq-name").value,
-        code: document.getElementById("eq-code").value,
-        entryDate: document.getElementById("eq-entry-date").value,
-        exitDate: document.getElementById("eq-exit-date").value,
-        report: document.getElementById("eq-report").value,
-        dept: document.getElementById("eq-dept").value,
-        status: document.getElementById("eq-status").value
-      };
+      const editId = document.getElementById("edit-eq-id").value;
+      const name = document.getElementById("eq-name").value;
+      const code = document.getElementById("eq-code").value;
+      const entryDate = document.getElementById("eq-entry-date").value;
+      const exitDate = document.getElementById("eq-exit-date").value;
+      const report = document.getElementById("eq-report").value;
+      const dept = document.getElementById("eq-dept").value;
+      const status = document.getElementById("eq-status").value;
 
-      equipmentList.push(newEquipment);
+      if (editId) {
+        // Update existing item
+        const index = equipmentList.findIndex(item => item.id == editId);
+        if (index !== -1) {
+          equipmentList[index] = { id: Number(editId), name, code, entryDate, exitDate, report, dept, status };
+        }
+      } else {
+        // Add new item
+        const newEquipment = {
+          id: Date.now(),
+          name,
+          code,
+          entryDate,
+          exitDate,
+          report,
+          dept,
+          status
+        };
+        equipmentList.push(newEquipment);
+      }
+
+      cancelEdit();
       render();
-      form.reset();
     });
+
+    // Populate Form for Editing
+    function editEquipment(id) {
+      const item = equipmentList.find(eq => eq.id === id);
+      if (!item) return;
+
+      document.getElementById("edit-eq-id").value = item.id;
+      document.getElementById("eq-name").value = item.name;
+      document.getElementById("eq-code").value = item.code;
+      document.getElementById("eq-entry-date").value = item.entryDate;
+      document.getElementById("eq-exit-date").value = item.exitDate;
+      document.getElementById("eq-report").value = item.report;
+      document.getElementById("eq-dept").value = item.dept;
+      document.getElementById("eq-status").value = item.status;
+
+      document.getElementById("form-panel-title").innerText = "Edit Equipment";
+      document.getElementById("form-submit-btn").innerText = "Save Changes";
+      document.getElementById("cancel-edit-btn").style.display = "block";
+
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+    }
+
+    // Cancel Edit Mode
+    function cancelEdit() {
+      form.reset();
+      document.getElementById("edit-eq-id").value = "";
+      document.getElementById("form-panel-title").innerText = "Add New Equipment";
+      document.getElementById("form-submit-btn").innerText = "+ Add Equipment";
+      document.getElementById("cancel-edit-btn").style.display = "none";
+    }
 
     // Add Monthly Record Event
     monthlyForm.addEventListener("submit", function(e) {
@@ -729,15 +790,19 @@
     // Delete Equipment Event
     function deleteEquipment(id) {
       if (currentRole !== "admin") return;
-      equipmentList = equipmentList.filter(item => item.id !== id);
-      render();
+      if (confirm("Are you sure you want to delete this equipment?")) {
+        equipmentList = equipmentList.filter(item => item.id !== id);
+        render();
+      }
     }
 
     // Delete Monthly Record Event
     function deleteMonthlyRecord(id) {
       if (currentRole !== "admin") return;
-      monthlyStats = monthlyStats.filter(item => item.id !== id);
-      render();
+      if (confirm("Are you sure you want to delete this monthly record?")) {
+        monthlyStats = monthlyStats.filter(item => item.id !== id);
+        render();
+      }
     }
 
     // Initial Load
