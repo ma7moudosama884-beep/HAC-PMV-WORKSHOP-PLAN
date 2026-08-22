@@ -492,11 +492,33 @@
         document.getElementById("login-overlay").style.display = "none";
         const roleSelect = document.getElementById("role-select");
         roleSelect.value = USERS[user].role;
-        toggleRole(USERS[user].role);
+        currentRole = USERS[user].role;
+        applyPermissions();
       } else {
         errorMsg.style.display = "block";
       }
     });
+
+    // Role Permissions Toggle with Password Prompt
+    function toggleRole(role) {
+      const roleSelect = document.getElementById("role-select");
+      
+      if (role === "admin" && currentRole !== "admin") {
+        const passwordPrompt = prompt("Please enter Admin Password to access Admin Mode:");
+        if (passwordPrompt === USERS["mahmoud osama"].pass) {
+          currentRole = "admin";
+          applyPermissions();
+        } else {
+          alert("Incorrect Password! Access Denied.");
+          roleSelect.value = "viewer";
+          currentRole = "viewer";
+          applyPermissions();
+        }
+      } else {
+        currentRole = role;
+        applyPermissions();
+      }
+    }
 
     // Render Tables and Metrics
     function render() {
@@ -622,12 +644,6 @@
         closeModal();
       }
     };
-
-    // Role Permissions Toggle
-    function toggleRole(role) {
-      currentRole = role;
-      applyPermissions();
-    }
 
     function applyPermissions() {
       const actionCols = document.querySelectorAll(".admin-action-col");
