@@ -1,0 +1,704 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>PMV Workshop Plan - Hassan Allam Construction</title>
+  <style>
+    :root {
+      --bg-color: #f4f6f8;
+      --card-bg: #ffffff;
+      --navy: #002b49;
+      --text-main: #333333;
+      --text-muted: #666666;
+      --border-color: #e0e0e0;
+
+      /* Status Colors */
+      --status-ready: #2ecc71;
+      --status-delay: #e74c3c;
+      --status-progress: #3498db;
+      --status-external: #9b59b6;
+      --status-waiting: #f39c12;
+      --status-dispatched: #7f8c8d;
+    }
+
+    * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; }
+    body { background-color: var(--bg-color); color: var(--text-main); display: flex; flex-direction: column; min-height: 100vh; }
+
+    /* Login Screen Overlay */
+    #login-overlay {
+      position: fixed;
+      top: 0; left: 0; width: 100%; height: 100%;
+      background: var(--navy);
+      display: flex; justify-content: center; align-items: center;
+      z-index: 9999;
+    }
+    .login-card {
+      background: #ffffff;
+      padding: 35px 30px;
+      border-radius: 12px;
+      box-shadow: 0 10px 25px rgba(0,0,0,0.3);
+      width: 90%; max-width: 380px;
+      text-align: center;
+    }
+    .login-card img { height: 50px; margin-bottom: 15px; }
+    .login-card h2 { color: var(--navy); margin-bottom: 20px; font-size: 18px; }
+    .login-card .form-group { text-align: left; margin-bottom: 15px; }
+    .login-card label { display: block; font-size: 12px; font-weight: bold; margin-bottom: 5px; color: var(--text-muted); }
+    .login-card input { width: 100%; padding: 10px; border: 1px solid var(--border-color); border-radius: 4px; font-size: 13px; }
+    .login-error { color: var(--status-delay); font-size: 12px; margin-top: 10px; display: none; font-weight: bold; }
+
+    /* Header & Branding */
+    header {
+      background: #ffffff;
+      border-bottom: 3px solid var(--navy);
+      padding: 12px 30px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      box-shadow: 0 2px 5px rgba(0,0,0,0.05);
+    }
+    .logo-container { display: flex; align-items: center; gap: 15px; }
+    .logo-container img { height: 45px; object-fit: contain; }
+    .logo-container h1 { font-size: 20px; color: var(--navy); border-left: 2px solid #ccc; padding-left: 15px; font-weight: bold; }
+    
+    .role-switch { font-size: 13px; font-weight: bold; color: var(--navy); display: flex; align-items: center; gap: 8px; }
+    .role-switch select { padding: 5px 10px; border-radius: 4px; border: 1px solid var(--border-color); font-weight: bold; }
+
+    /* Dashboard Layout */
+    .container { padding: 25px; max-width: 1400px; margin: 0 auto; flex: 1; width: 100%; }
+    
+    /* Summary Cards */
+    .summary-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(140px, 1fr)); gap: 15px; margin-bottom: 25px; }
+    .stat-card { 
+      background: var(--card-bg); 
+      padding: 15px; 
+      border-radius: 8px; 
+      border: 1px solid var(--border-color); 
+      text-align: center; 
+      cursor: pointer; 
+      transition: transform 0.2s, box-shadow 0.2s;
+      user-select: none;
+    }
+    .stat-card:hover { 
+      transform: translateY(-2px); 
+      box-shadow: 0 4px 10px rgba(0,0,0,0.08); 
+    }
+    .stat-card h3 { font-size: 11px; color: var(--text-muted); margin-bottom: 6px; text-transform: uppercase; }
+    .stat-card p { font-size: 22px; font-weight: bold; }
+    .stat-hint { font-size: 9px; color: #888; margin-top: 4px; font-style: italic; }
+
+    /* Content Layout */
+    .content-grid { display: grid; grid-template-columns: 320px 1fr; gap: 25px; transition: all 0.3s ease; margin-bottom: 25px; }
+    .content-grid.full-width { grid-template-columns: 1fr; }
+
+    /* Form Section */
+    .form-panel { background: var(--card-bg); padding: 20px; border-radius: 8px; border: 1px solid var(--border-color); height: fit-content; }
+    .form-panel h2 { font-size: 16px; color: var(--navy); margin-bottom: 15px; border-bottom: 2px solid var(--navy); padding-bottom: 8px; }
+    .form-group { margin-bottom: 12px; }
+    .form-group label { display: block; font-size: 12px; font-weight: bold; margin-bottom: 5px; color: var(--text-muted); }
+    .form-group input, .form-group select, .form-group textarea { width: 100%; padding: 8px 10px; border: 1px solid var(--border-color); border-radius: 4px; font-size: 13px; }
+    .form-group textarea { resize: vertical; height: 50px; }
+    .btn-add { width: 100%; background: var(--navy); color: #fff; border: none; padding: 10px; border-radius: 4px; font-weight: bold; cursor: pointer; margin-top: 10px; }
+    .btn-add:hover { background: #001a2e; }
+
+    /* Equipment Table Panel */
+    .table-panel { background: var(--card-bg); padding: 20px; border-radius: 8px; border: 1px solid var(--border-color); }
+    .table-panel h2 { font-size: 16px; color: var(--navy); margin-bottom: 15px; }
+    table { width: 100%; border-collapse: collapse; font-size: 13px; }
+    th, td { padding: 10px; text-align: left; border-bottom: 1px solid var(--border-color); vertical-align: middle; }
+    th { background-color: #f8f9fa; color: var(--navy); }
+    
+    .code-cell-container { display: flex; flex-direction: column; gap: 3px; }
+    .eq-report-text { font-size: 11px; color: var(--text-muted); font-style: italic; font-weight: normal; }
+
+    .dept-cell { display: flex; align-items: center; gap: 8px; font-weight: 500; }
+    .dept-icon { font-size: 16px; }
+
+    /* Status Badges */
+    .status-badge { padding: 4px 8px; border-radius: 12px; font-size: 10px; font-weight: bold; text-transform: uppercase; display: inline-block; }
+    .status-Ready { background-color: #e8f8f0; color: var(--status-ready); }
+    .status-Delay { background-color: #fdeaea; color: var(--status-delay); }
+    .status-In-Progress { background-color: #ebf5fb; color: var(--status-progress); }
+    .status-External { background-color: #f5eeed; color: var(--status-external); }
+    .status-Waiting { background-color: #fef9e7; color: var(--status-waiting); }
+    .status-Dispatched { background-color: #f0f3f4; color: var(--status-dispatched); }
+
+    .btn-delete { background: var(--status-delay); color: white; border: none; padding: 6px 10px; border-radius: 4px; cursor: pointer; font-size: 12px; }
+    .btn-delete:hover { background: #c0392b; }
+
+    /* Modal Styles */
+    .modal-overlay {
+      position: fixed;
+      top: 0; left: 0; width: 100%; height: 100%;
+      background: rgba(0, 43, 73, 0.5);
+      backdrop-filter: blur(3px);
+      display: none;
+      justify-content: center;
+      align-items: center;
+      z-index: 1000;
+    }
+    .modal-card {
+      background: #ffffff;
+      width: 90%;
+      max-width: 800px;
+      border-radius: 10px;
+      box-shadow: 0 10px 25px rgba(0,0,0,0.2);
+      overflow: hidden;
+      animation: modalFadeIn 0.25s ease-out;
+    }
+    @keyframes modalFadeIn {
+      from { opacity: 0; transform: translateY(-20px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+    .modal-header {
+      background: var(--navy);
+      color: #ffffff;
+      padding: 15px 20px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+    .modal-header h3 { font-size: 16px; font-weight: bold; }
+    .modal-close {
+      background: transparent;
+      border: none;
+      color: #ffffff;
+      font-size: 20px;
+      cursor: pointer;
+      line-height: 1;
+    }
+    .modal-body {
+      padding: 20px;
+      max-height: 60vh;
+      overflow-y: auto;
+    }
+    .modal-table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 13px;
+    }
+    .modal-table th, .modal-table td {
+      padding: 10px;
+      border-bottom: 1px solid var(--border-color);
+    }
+    .modal-table th {
+      background: #f8f9fa;
+      color: var(--navy);
+      text-align: left;
+    }
+    .empty-modal-msg {
+      text-align: center;
+      color: var(--text-muted);
+      padding: 20px;
+      font-style: italic;
+    }
+
+    /* Footer */
+    footer {
+      background: var(--navy);
+      color: #ffffff;
+      text-align: center;
+      padding: 15px;
+      font-size: 13px;
+      margin-top: 30px;
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Login Screen -->
+  <div id="login-overlay">
+    <div class="login-card">
+      <img src="https://raw.githubusercontent.com/abdo-allam/HA-Assets/main/hassan-allam-logo.png" alt="Hassan Allam Logo" onerror="this.src='https://upload.wikimedia.org/wikipedia/commons/e/e3/Hassan_Allam_Construction_logo.png'">
+      <h2>PMV Workshop System</h2>
+      <form id="login-form">
+        <div class="form-group">
+          <label>Username</label>
+          <input type="text" id="login-user" required placeholder="Enter Username">
+        </div>
+        <div class="form-group">
+          <label>Password</label>
+          <input type="password" id="login-pass" required placeholder="Enter Password">
+        </div>
+        <button type="submit" class="btn-add">Login</button>
+        <p id="login-error" class="login-error">Invalid Username or Password!</p>
+      </form>
+    </div>
+  </div>
+
+  <!-- Header -->
+  <header>
+    <div class="logo-container">
+      <img src="https://raw.githubusercontent.com/abdo-allam/HA-Assets/main/hassan-allam-logo.png" alt="Hassan Allam Logo" onerror="this.src='https://upload.wikimedia.org/wikipedia/commons/e/e3/Hassan_Allam_Construction_logo.png'">
+      <h1>PMV Workshop Plan</h1>
+    </div>
+    <div class="role-switch">
+      <label for="role-select">Access Mode:</label>
+      <select id="role-select" onchange="toggleRole(this.value)">
+        <option value="admin">Admin (Eng. Mahmoud Osama)</option>
+        <option value="viewer">Team Member (View Only)</option>
+      </select>
+    </div>
+  </header>
+
+  <div class="container">
+    
+    <!-- Summary Cards -->
+    <div class="summary-grid">
+      <div class="stat-card" ondblclick="openModal('All')">
+        <h3>Total Equipment</h3>
+        <p id="total-count" style="color: var(--navy);">0</p>
+        <div class="stat-hint">Double click to view</div>
+      </div>
+      <div class="stat-card" ondblclick="openModal('Ready')">
+        <h3>Ready</h3>
+        <p id="ready-count" style="color: var(--status-ready);">0</p>
+        <div class="stat-hint">Double click to view</div>
+      </div>
+      <div class="stat-card" ondblclick="openModal('In Progress')">
+        <h3>In Progress</h3>
+        <p id="progress-count" style="color: var(--status-progress);">0</p>
+        <div class="stat-hint">Double click to view</div>
+      </div>
+      <div class="stat-card" ondblclick="openModal('Waiting')">
+        <h3>Waiting</h3>
+        <p id="waiting-count" style="color: var(--status-waiting);">0</p>
+        <div class="stat-hint">Double click to view</div>
+      </div>
+      <div class="stat-card" ondblclick="openModal('Delay')">
+        <h3>Delay</h3>
+        <p id="delay-count" style="color: var(--status-delay);">0</p>
+        <div class="stat-hint">Double click to view</div>
+      </div>
+      <div class="stat-card" ondblclick="openModal('External')">
+        <h3>External</h3>
+        <p id="external-count" style="color: var(--status-external);">0</p>
+        <div class="stat-hint">Double click to view</div>
+      </div>
+      <div class="stat-card" ondblclick="openModal('Dispatched')">
+        <h3>Dispatched / Exited</h3>
+        <p id="dispatched-count" style="color: var(--status-dispatched);">0</p>
+        <div class="stat-hint">Double click to view</div>
+      </div>
+    </div>
+
+    <!-- Section 1: Equipment Inventory -->
+    <div class="content-grid" id="main-grid">
+      
+      <!-- Form: Add Equipment (Admin Only) -->
+      <div class="form-panel" id="admin-form-panel">
+        <h2>Add New Equipment</h2>
+        <form id="equipment-form">
+          <div class="form-group">
+            <label>Equipment Name</label>
+            <input type="text" id="eq-name" placeholder="e.g. Caterpillar Excavator" required>
+          </div>
+          <div class="form-group">
+            <label>Equipment Code</label>
+            <input type="text" id="eq-code" placeholder="e.g. EQ-10020" required>
+          </div>
+          <div class="form-group">
+            <label>Entry Date</label>
+            <input type="date" id="eq-entry-date" required>
+          </div>
+          <div class="form-group">
+            <label>Exit Date (If Exited)</label>
+            <input type="date" id="eq-exit-date">
+          </div>
+          <div class="form-group">
+            <label>Condition / Status Report</label>
+            <input type="text" id="eq-report" placeholder="e.g. Hydraulic pump issue / Overhaul">
+          </div>
+          <div class="form-group">
+            <label>Department / Workshop Stage</label>
+            <select id="eq-dept" required>
+              <option value="Mechanics">Mechanics</option>
+              <option value="Denting">Denting</option>
+              <option value="Blacksmith">Blacksmith</option>
+              <option value="Painting">Painting</option>
+              <option value="Electric">Electric</option>
+            </select>
+          </div>
+          <div class="form-group">
+            <label>Current Status</label>
+            <select id="eq-status" required>
+              <option value="Ready">Ready</option>
+              <option value="In Progress">In Progress</option>
+              <option value="Waiting">Waiting</option>
+              <option value="Delay">Delay</option>
+              <option value="External">External</option>
+              <option value="Dispatched">Dispatched / Exited</option>
+            </select>
+          </div>
+          <button type="submit" class="btn-add">+ Add Equipment</button>
+        </form>
+      </div>
+
+      <!-- Table: Equipment List -->
+      <div class="table-panel">
+        <h2>Equipment Inventory Table</h2>
+        <table>
+          <thead>
+            <tr>
+              <th>Equipment Name</th>
+              <th>Code / Report</th>
+              <th>Entry Date</th>
+              <th>Exit Date</th>
+              <th>Department</th>
+              <th>Status</th>
+              <th class="admin-action-col">Action</th>
+            </tr>
+          </thead>
+          <tbody id="equipment-table-body">
+            <!-- Dynamic Content -->
+          </tbody>
+        </table>
+      </div>
+
+    </div>
+
+    <!-- Section 2: Monthly Statistics -->
+    <div class="content-grid" id="monthly-grid">
+      
+      <!-- Form: Log Monthly Record (Admin Only) -->
+      <div class="form-panel" id="admin-monthly-panel">
+        <h2>Log Monthly Report</h2>
+        <form id="monthly-form">
+          <div class="form-group">
+            <label>Month</label>
+            <input type="month" id="m-month" required>
+          </div>
+          <div class="form-group">
+            <label>Received Equipment</label>
+            <input type="number" id="m-received" min="0" placeholder="0" required>
+          </div>
+          <div class="form-group">
+            <label>Repaired Equipment</label>
+            <input type="number" id="m-repaired" min="0" placeholder="0" required>
+          </div>
+          <div class="form-group">
+            <label>Dispatched / Released</label>
+            <input type="number" id="m-dispatched" min="0" placeholder="0" required>
+          </div>
+          <button type="submit" class="btn-add">+ Log Month</button>
+        </form>
+      </div>
+
+      <!-- Table: Monthly Performance -->
+      <div class="table-panel">
+        <h2>Monthly PMV Performance Statistics</h2>
+        <table>
+          <thead>
+            <tr>
+              <th>Month</th>
+              <th>Received</th>
+              <th>Repaired</th>
+              <th>Dispatched</th>
+              <th class="admin-action-col">Action</th>
+            </tr>
+          </thead>
+          <tbody id="monthly-table-body">
+            <!-- Dynamic Content -->
+          </tbody>
+        </table>
+      </div>
+
+    </div>
+
+  </div>
+
+  <!-- Modal Popup -->
+  <div class="modal-overlay" id="statusModal">
+    <div class="modal-card">
+      <div class="modal-header">
+        <h3 id="modalTitle">Equipment List</h3>
+        <button class="modal-close" onclick="closeModal()">&times;</button>
+      </div>
+      <div class="modal-body">
+        <table class="modal-table">
+          <thead>
+            <tr>
+              <th>Code / Report</th>
+              <th>Equipment Name</th>
+              <th>Entry Date</th>
+              <th>Exit Date</th>
+              <th>Department</th>
+              <th>Status</th>
+            </tr>
+          </thead>
+          <tbody id="modalTableBody">
+            <!-- Dynamic Modal Rows -->
+          </tbody>
+        </table>
+        <div id="emptyModalMsg" class="empty-modal-msg" style="display: none;">No equipment found in this status.</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Footer Signoff -->
+  <footer>
+    Designed by Eng. Mahmoud Osama | Hassan Allam Construction
+  </footer>
+
+  <script>
+    let currentRole = "admin";
+
+    // Valid Credentials Configuration
+    const USERS = {
+      "mahmoud osama": { pass: "OSS123456", role: "admin" },
+      "viewer": { pass: "user123", role: "viewer" }
+    };
+
+    // Department Icon Mapping
+    const deptIcons = {
+      "Mechanics": "🛠️",
+      "Denting": "🔨",
+      "Blacksmith": "⚒️",
+      "Painting": "🎨",
+      "Electric": "⚡"
+    };
+
+    // Initial Mock Data with Entry & Exit Dates
+    let equipmentList = [
+      { id: 1, name: "Komatsu Excavator 01", code: "EQ-10060", entryDate: "2026-01-10", exitDate: "", report: "Engine service completed", dept: "Mechanics", status: "Ready" },
+      { id: 2, name: "Mercedes Truck 12", code: "EQ-10001", entryDate: "2026-01-15", exitDate: "", report: "Gearbox maintenance in progress", dept: "Mechanics", status: "In Progress" },
+      { id: 3, name: "Toyota Forklift", code: "EQ-2065", entryDate: "2026-02-01", exitDate: "", report: "Waiting for spare parts", dept: "Electric", status: "Waiting" },
+      { id: 4, name: "Dynapac Roller", code: "EQ-5090", entryDate: "2026-01-05", exitDate: "2026-02-15", report: "Repaired & Dispatched to Site A", dept: "Mechanics", status: "Dispatched" }
+    ];
+
+    let monthlyStats = [
+      { id: 101, month: "2026-01", received: 14, repaired: 12, dispatched: 10 },
+      { id: 102, month: "2026-02", received: 18, repaired: 15, dispatched: 16 }
+    ];
+
+    const tableBody = document.getElementById("equipment-table-body");
+    const monthlyTableBody = document.getElementById("monthly-table-body");
+    const form = document.getElementById("equipment-form");
+    const monthlyForm = document.getElementById("monthly-form");
+    const adminPanel = document.getElementById("admin-form-panel");
+    const adminMonthlyPanel = document.getElementById("admin-monthly-panel");
+    const mainGrid = document.getElementById("main-grid");
+    const monthlyGrid = document.getElementById("monthly-grid");
+
+    // Login Form Handler
+    document.getElementById("login-form").addEventListener("submit", function(e) {
+      e.preventDefault();
+      const user = document.getElementById("login-user").value.trim().toLowerCase();
+      const pass = document.getElementById("login-pass").value;
+      const errorMsg = document.getElementById("login-error");
+
+      if (USERS[user] && USERS[user].pass === pass) {
+        document.getElementById("login-overlay").style.display = "none";
+        const roleSelect = document.getElementById("role-select");
+        roleSelect.value = USERS[user].role;
+        toggleRole(USERS[user].role);
+      } else {
+        errorMsg.style.display = "block";
+      }
+    });
+
+    // Render Tables and Metrics
+    function render() {
+      // 1. Render Equipment Table
+      tableBody.innerHTML = "";
+      let counts = { Ready: 0, "In Progress": 0, Waiting: 0, Delay: 0, External: 0, Dispatched: 0 };
+
+      equipmentList.forEach((item) => {
+        if (counts[item.status] !== undefined) counts[item.status]++;
+
+        const statusClass = item.status.replace(/\s+/g, '-');
+        const icon = deptIcons[item.dept] || "🔧";
+        const reportDisplay = item.report ? `<span class="eq-report-text">📝 ${item.report}</span>` : '';
+        const entryDateDisplay = item.entryDate || "N/A";
+        const exitDateDisplay = item.exitDate ? `🚪 ${item.exitDate}` : "-";
+
+        const row = document.createElement("tr");
+        row.innerHTML = `
+          <td><strong>${item.name}</strong></td>
+          <td>
+            <div class="code-cell-container">
+              <code><strong>${item.code}</strong></code>
+              ${reportDisplay}
+            </div>
+          </td>
+          <td>📅 ${entryDateDisplay}</td>
+          <td>${exitDateDisplay}</td>
+          <td>
+            <div class="dept-cell">
+              <span class="dept-icon">${icon}</span>
+              <span>${item.dept}</span>
+            </div>
+          </td>
+          <td>
+            <span class="status-badge status-${statusClass}">
+              ${item.status}
+            </span>
+          </td>
+          <td class="admin-action-col"><button class="btn-delete" onclick="deleteEquipment(${item.id})">Delete</button></td>
+        `;
+        tableBody.appendChild(row);
+      });
+
+      // Update Top Summary Cards
+      document.getElementById("total-count").innerText = equipmentList.length;
+      document.getElementById("ready-count").innerText = counts["Ready"];
+      document.getElementById("progress-count").innerText = counts["In Progress"];
+      document.getElementById("waiting-count").innerText = counts["Waiting"];
+      document.getElementById("delay-count").innerText = counts["Delay"];
+      document.getElementById("external-count").innerText = counts["External"];
+      document.getElementById("dispatched-count").innerText = counts["Dispatched"];
+
+      // 2. Render Monthly Statistics Table
+      monthlyTableBody.innerHTML = "";
+      monthlyStats.forEach((item) => {
+        const row = document.createElement("tr");
+        row.innerHTML = `
+          <td><strong>${item.month}</strong></td>
+          <td><span style="color: var(--navy); font-weight: bold;">${item.received}</span></td>
+          <td><span style="color: var(--status-ready); font-weight: bold;">${item.repaired}</span></td>
+          <td><span style="color: var(--status-progress); font-weight: bold;">${item.dispatched}</span></td>
+          <td class="admin-action-col"><button class="btn-delete" onclick="deleteMonthlyRecord(${item.id})">Delete</button></td>
+        `;
+        monthlyTableBody.appendChild(row);
+      });
+
+      // Apply UI permissions based on Role
+      applyPermissions();
+    }
+
+    // Modal Functions for Double-Click Action
+    function openModal(statusFilter) {
+      const modal = document.getElementById("statusModal");
+      const modalTitle = document.getElementById("modalTitle");
+      const modalTableBody = document.getElementById("modalTableBody");
+      const emptyMsg = document.getElementById("emptyModalMsg");
+
+      modalTitle.innerText = statusFilter === 'All' ? 'All Registered Equipment Codes' : `Equipment Codes - [${statusFilter}]`;
+      modalTableBody.innerHTML = "";
+
+      const filteredList = statusFilter === 'All' ? equipmentList : equipmentList.filter(item => item.status === statusFilter);
+
+      if (filteredList.length === 0) {
+        emptyMsg.style.display = "block";
+      } else {
+        emptyMsg.style.display = "none";
+        filteredList.forEach(item => {
+          const statusClass = item.status.replace(/\s+/g, '-');
+          const icon = deptIcons[item.dept] || "🔧";
+          const reportDisplay = item.report ? `<span class="eq-report-text">📝 ${item.report}</span>` : '';
+          const entryDateDisplay = item.entryDate || "N/A";
+          const exitDateDisplay = item.exitDate ? `🚪 ${item.exitDate}` : "-";
+
+          const row = document.createElement("tr");
+          row.innerHTML = `
+            <td>
+              <div class="code-cell-container">
+                <code><strong>${item.code}</strong></code>
+                ${reportDisplay}
+              </div>
+            </td>
+            <td>${item.name}</td>
+            <td>📅 ${entryDateDisplay}</td>
+            <td>${exitDateDisplay}</td>
+            <td>${icon} ${item.dept}</td>
+            <td><span class="status-badge status-${statusClass}">${item.status}</span></td>
+          `;
+          modalTableBody.appendChild(row);
+        });
+      }
+
+      modal.style.display = "flex";
+    }
+
+    function closeModal() {
+      document.getElementById("statusModal").style.display = "none";
+    }
+
+    // Close modal when clicking outside
+    window.onclick = function(event) {
+      const modal = document.getElementById("statusModal");
+      if (event.target === modal) {
+        closeModal();
+      }
+    };
+
+    // Role Permissions Toggle
+    function toggleRole(role) {
+      currentRole = role;
+      applyPermissions();
+    }
+
+    function applyPermissions() {
+      const actionCols = document.querySelectorAll(".admin-action-col");
+      if (currentRole === "admin") {
+        adminPanel.style.display = "block";
+        adminMonthlyPanel.style.display = "block";
+        mainGrid.classList.remove("full-width");
+        monthlyGrid.classList.remove("full-width");
+        actionCols.forEach(col => col.style.display = "");
+      } else {
+        adminPanel.style.display = "none";
+        adminMonthlyPanel.style.display = "none";
+        mainGrid.classList.add("full-width");
+        monthlyGrid.classList.add("full-width");
+        actionCols.forEach(col => col.style.display = "none");
+      }
+    }
+
+    // Add Equipment Event
+    form.addEventListener("submit", function(e) {
+      e.preventDefault();
+      
+      const newEquipment = {
+        id: Date.now(),
+        name: document.getElementById("eq-name").value,
+        code: document.getElementById("eq-code").value,
+        entryDate: document.getElementById("eq-entry-date").value,
+        exitDate: document.getElementById("eq-exit-date").value,
+        report: document.getElementById("eq-report").value,
+        dept: document.getElementById("eq-dept").value,
+        status: document.getElementById("eq-status").value
+      };
+
+      equipmentList.push(newEquipment);
+      render();
+      form.reset();
+    });
+
+    // Add Monthly Record Event
+    monthlyForm.addEventListener("submit", function(e) {
+      e.preventDefault();
+      
+      const newMonthly = {
+        id: Date.now(),
+        month: document.getElementById("m-month").value,
+        received: parseInt(document.getElementById("m-received").value) || 0,
+        repaired: parseInt(document.getElementById("m-repaired").value) || 0,
+        dispatched: parseInt(document.getElementById("m-dispatched").value) || 0
+      };
+
+      monthlyStats.push(newMonthly);
+      render();
+      monthlyForm.reset();
+    });
+
+    // Delete Equipment Event
+    function deleteEquipment(id) {
+      if (currentRole !== "admin") return;
+      equipmentList = equipmentList.filter(item => item.id !== id);
+      render();
+    }
+
+    // Delete Monthly Record Event
+    function deleteMonthlyRecord(id) {
+      if (currentRole !== "admin") return;
+      monthlyStats = monthlyStats.filter(item => item.id !== id);
+      render();
+    }
+
+    // Initial Load
+    render();
+  </script>
+</body>
+</html>
