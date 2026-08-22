@@ -96,7 +96,7 @@
     .container { padding: 25px; max-width: 1400px; margin: 0 auto; flex: 1; width: 100%; }
     
     /* Summary Cards */
-    .summary-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(140px, 1fr)); gap: 15px; margin-bottom: 25px; }
+    .summary-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(140px, 1fr)); gap: 15px; margin-bottom: 20px; }
     .stat-card { 
       background: var(--card-bg); 
       padding: 15px; 
@@ -114,6 +114,32 @@
     .stat-card h3 { font-size: 11px; color: var(--text-muted); margin-bottom: 6px; text-transform: uppercase; }
     .stat-card p { font-size: 22px; font-weight: bold; }
     .stat-hint { font-size: 9px; color: #888; margin-top: 4px; font-style: italic; }
+
+    /* Annual Totals Banner */
+    .annual-banner {
+      background: linear-gradient(135deg, var(--navy), #004070);
+      color: #ffffff;
+      padding: 18px 25px;
+      border-radius: 8px;
+      margin-bottom: 25px;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+    }
+    .annual-banner h2 { font-size: 15px; margin-bottom: 12px; border-bottom: 1px solid rgba(255,255,255,0.2); padding-bottom: 6px; display: flex; align-items: center; gap: 8px; }
+    .annual-stats-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+      gap: 15px;
+    }
+    .annual-item {
+      background: rgba(255, 255, 255, 0.08);
+      padding: 12px 15px;
+      border-radius: 6px;
+      border-left: 4px solid var(--status-ready);
+    }
+    .annual-item.exited { border-left-color: var(--status-progress); }
+    .annual-item.ready-done { border-left-color: #f1c40f; }
+    .annual-item span { display: block; font-size: 11px; opacity: 0.85; margin-bottom: 4px; text-transform: uppercase; }
+    .annual-item strong { font-size: 20px; }
 
     /* Content Layout */
     .content-grid { display: grid; grid-template-columns: 320px 1fr; gap: 25px; transition: all 0.3s ease; margin-bottom: 25px; }
@@ -317,6 +343,25 @@
         <h3>Dispatched / Exited</h3>
         <p id="dispatched-count" style="color: var(--status-dispatched);">0</p>
         <div class="stat-hint">Double click to view</div>
+      </div>
+    </div>
+
+    <!-- Annual Totals Section (Year 2026 cumulative) -->
+    <div class="annual-banner">
+      <h2>📅 Cumulative Totals Since Start of Year (2026)</h2>
+      <div class="annual-stats-grid">
+        <div class="annual-item">
+          <span>Total Entered Workshop</span>
+          <strong id="annual-entered-count">0</strong>
+        </div>
+        <div class="annual-item exited">
+          <span>Total Dispatched / Exited</span>
+          <strong id="annual-exited-count">0</strong>
+        </div>
+        <div class="annual-item ready-done">
+          <span>Total Repaired / Ready</span>
+          <strong id="annual-ready-count">0</strong>
+        </div>
       </div>
     </div>
 
@@ -584,9 +629,9 @@
       }
     }
 
-    // Render Tables and Metrics
+    // Render Tables, Metrics and Annual Cumulative Totals
     function render() {
-      // 1. Render Equipment Table
+      // 1. Render Equipment Table & Current Status Counts
       tableBody.innerHTML = "";
       let counts = { Ready: 0, "In Progress": 0, Waiting: 0, Delay: 0, External: 0, Dispatched: 0 };
 
@@ -655,6 +700,41 @@
         `;
         monthlyTableBody.appendChild(row);
       });
+
+      // 3. Calculate and Render Cumulative Annual Totals (Year 2026)
+      let annualEntered = 0;
+      let annualExited = 0;
+      let annualReady = 0;
+
+      // Sum from monthly logged records belonging to year 2026
+      monthlyStats.forEach(m => {
+        if (m.month && m.month.startsWith("2026")) {
+          annualEntered += (Number(m.received) || 0);
+          annualExited += (Number(m.dispatched) || 0);
+          annualReady += (Number(m.repaired) || 0);
+        }
+      });
+
+      // Add active items from equipment inventory list entered in 2026 if not already captured via monthly logs
+      equipmentList.forEach(eq => {
+        if (eq.entryDate && eq.entryDate.startsWith("2026")) {
+          // You can also add custom verification if needed, or aggregate directly from equipment table entries
+        }
+      });
+
+      // Alternatively, compute directly from current inventory items plus monthly logs for absolute comprehensive totals
+      let invEntered2026 = equipmentList.filter(eq => eq.entryDate && eq.entryDate.startsWith("2026")).length;
+      let invExited2026 = equipmentList.filter(eq => eq.exitDate && eq.exitDate.startsWith("2026")).length;
+      let invReady2026 = equipmentList.filter(eq => (eq.status === "Ready" || eq.status === "Dispatched") && eq.entryDate && eq.entryDate.startsWith("2026")).length;
+
+      // Total summation combining logs and direct inventory list for 2026
+      let totalAnnualEntered = Math.max(annualEntered, invEntered2026);
+      let totalAnnualExited = Math.max(annualExited, invExited2026);
+      let totalAnnualReady = Math.max(annualReady, invReady2026);
+
+      document.getElementById("annual-entered-count").innerText = totalAnnualEntered;
+      document.getElementById("annual-exited-count").innerText = totalAnnualExited;
+      document.getElementById("annual-ready-count").innerText = totalAnnualReady;
 
       applyPermissions();
     }
