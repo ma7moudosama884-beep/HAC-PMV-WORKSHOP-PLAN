@@ -931,7 +931,10 @@
         return;
       }
 
-      monthlyStats.forEach(item => {
+      // Sort monthly stats descending (newest month at the top)
+      const sortedStats = [...monthlyStats].sort((a, b) => b.month.localeCompare(a.month));
+
+      sortedStats.forEach(item => {
         const tr = document.createElement("tr");
         tr.innerHTML = `
           <td><strong>${item.month}</strong></td>
