@@ -141,6 +141,28 @@
     .annual-item span { display: block; font-size: 11px; opacity: 0.85; margin-bottom: 4px; text-transform: uppercase; }
     .annual-item strong { font-size: 20px; }
 
+    /* Tabs Navigation */
+    .view-tabs {
+      display: flex;
+      gap: 10px;
+      margin-bottom: 15px;
+    }
+    .tab-btn {
+      padding: 8px 18px;
+      background: #e0e6ed;
+      border: none;
+      border-radius: 6px;
+      font-weight: bold;
+      font-size: 13px;
+      color: var(--navy);
+      cursor: pointer;
+      transition: all 0.2s;
+    }
+    .tab-btn.active {
+      background: var(--navy);
+      color: #ffffff;
+    }
+
     /* Content Layout */
     .content-grid { display: grid; grid-template-columns: 320px 1fr; gap: 25px; transition: all 0.3s ease; margin-bottom: 25px; }
     .content-grid.full-width { grid-template-columns: 1fr; }
@@ -203,7 +225,7 @@
     .exit-project-tag { font-size: 11px; color: #c0392b; font-weight: bold; background: #fdeaea; padding: 2px 6px; border-radius: 4px; width: fit-content; }
 
     .dept-cell { display: flex; align-items: center; gap: 8px; font-weight: 500; }
-    .dept-icon { font-size: 16px; }
+    .dept-icon-img { width: 22px; height: 22px; object-fit: contain; }
     .duration-badge { background: #eef2f5; padding: 3px 8px; border-radius: 4px; font-weight: bold; color: var(--navy); font-size: 12px; display: inline-block; }
 
     /* Status Badges */
@@ -464,10 +486,16 @@
         </form>
       </div>
 
-      <!-- Table: Equipment List -->
+      <!-- Table: Equipment List with Tabs -->
       <div class="table-panel">
+        <!-- View Switch Tabs -->
+        <div class="view-tabs">
+          <button class="tab-btn active" id="tab-active-btn" onclick="switchView('active')">🛠️ Active Workshop Equipment</button>
+          <button class="tab-btn" id="tab-archive-btn" onclick="switchView('archive')">📦 Dispatched / Archive List</button>
+        </div>
+
         <div class="table-panel-header">
-          <h2>Equipment Inventory Table</h2>
+          <h2 id="table-main-title">Active Equipment Inventory</h2>
           <div class="filters-wrapper">
             <div class="filter-container">
               <label for="name-filter">Equipment Type:</label>
@@ -624,19 +652,22 @@
     const db = getFirestore(app);
 
     let currentRole = "admin";
+    let currentView = "active"; // "active" or "archive"
+    
     const USERS = {
       "mahmoud osama": { pass: "OSS123456", role: "admin" },
       "viewer": { pass: "user123", role: "viewer" }
     };
 
+    // Professional SVG icons representing heavy equipment departments
     const deptIcons = {
-      "Mechanics": "🛠️",
-      "Denting": "🔨",
-      "Blacksmith": "⚒️",
-      "Welding": "🔥",
-      "Painting": "🎨",
-      "Electric": "⚡",
-      "Testing": "🧪"
+      "Mechanics": "https://api.iconify.design/fluent-emoji-flat:gear.svg",
+      "Denting": "https://api.iconify.design/fluent-emoji-flat:hammer-and-wrench.svg",
+      "Blacksmith": "https://api.iconify.design/fluent-emoji-flat:anvils.svg",
+      "Welding": "https://api.iconify.design/fluent-emoji-flat:fire.svg",
+      "Painting": "https://api.iconify.design/fluent-emoji-flat:artist-palette.svg",
+      "Electric": "https://api.iconify.design/fluent-emoji-flat:high-voltage.svg",
+      "Testing": "https://api.iconify.design/fluent-emoji-flat:test-tube.svg"
     };
 
     let equipmentList = [];
@@ -674,6 +705,24 @@
       alert("✅ Data is synchronized and saved automatically with Firebase cloud!");
     }
 
+    window.switchView = function(viewType) {
+      currentView = viewType;
+      const activeBtn = document.getElementById("tab-active-btn");
+      const archiveBtn = document.getElementById("tab-archive-btn");
+      const title = document.getElementById("table-main-title");
+
+      if (viewType === "active") {
+        activeBtn.classList.add("active");
+        archiveBtn.classList.remove("active");
+        title.textContent = "Active Equipment Inventory";
+      } else {
+        archiveBtn.classList.add("active");
+        activeBtn.classList.remove("active");
+        title.textContent = "Dispatched & Exited Equipment Archive";
+      }
+      render();
+    }
+
     function calculateDuration(entry, exit) {
       if (!entry) return "N/A";
       const start = new Date(entry);
@@ -684,7 +733,6 @@
     }
 
     function updateDropdowns() {
-      // 1. Projects Dropdown
       const projectFilterSelect = document.getElementById("project-filter");
       if(projectFilterSelect) {
         const currentSelectedProj = projectFilterSelect.value;
@@ -708,7 +756,6 @@
         }
       }
 
-      // 2. Equipment Type / Names Dropdown
       const nameFilterSelect = document.getElementById("name-filter");
       if(nameFilterSelect) {
         const currentSelectedName = nameFilterSelect.value;
@@ -894,7 +941,12 @@
       const projectFilter = document.getElementById("project-filter").value;
       const deptFilter = document.getElementById("dept-filter").value;
 
-      const filtered = equipmentList.filter(item => {
+      const baseList = equipmentList.filter(item => {
+        const isDispatched = (item.status === "Dispatched" || item.exitDate);
+        return currentView === "active" ? !isDispatched : isDispatched;
+      });
+
+      const filtered = baseList.filter(item => {
         const itemName = item.name ? item.name.trim() : "";
         const matchesName = (nameFilter === "All" || itemName === nameFilter);
         
@@ -920,7 +972,7 @@
       document.getElementById("waiting-count").textContent = equipmentList.filter(i => i.status === "Waiting").length;
       document.getElementById("delay-count").textContent = equipmentList.filter(i => i.status === "Delay").length;
       document.getElementById("external-count").textContent = equipmentList.filter(i => i.status === "External").length;
-      document.getElementById("dispatched-count").textContent = equipmentList.filter(i => i.status === "Dispatched").length;
+      document.getElementById("dispatched-count").textContent = equipmentList.filter(i => i.status === "Dispatched" || i.exitDate).length;
 
       // Calculate Annual Totals
       let totalReceivedMonthly = monthlyStats.reduce((sum, m) => sum + (Number(m.received) || 0), 0);
@@ -928,18 +980,18 @@
       let totalRepairedMonthly = monthlyStats.reduce((sum, m) => sum + (Number(m.repaired) || 0), 0);
 
       document.getElementById("annual-entered-count").textContent = totalReceivedMonthly > 0 ? totalReceivedMonthly : equipmentList.length;
-      document.getElementById("annual-exited-count").textContent = totalDispatchedMonthly > 0 ? totalDispatchedMonthly : equipmentList.filter(i => i.status === "Dispatched").length;
-      document.getElementById("annual-ready-count").textContent = totalRepairedMonthly > 0 ? totalRepairedMonthly : equipmentList.filter(i => i.status === "Ready" || i.status === "Dispatched").length;
+      document.getElementById("annual-exited-count").textContent = totalDispatchedMonthly > 0 ? totalDispatchedMonthly : equipmentList.filter(i => i.status === "Dispatched" || i.exitDate).length;
+      document.getElementById("annual-ready-count").textContent = totalRepairedMonthly > 0 ? totalRepairedMonthly : equipmentList.filter(i => i.status === "Ready" || i.status === "Dispatched" || i.exitDate).length;
 
       tableBody.innerHTML = "";
       if (filtered.length === 0) {
-        tableBody.innerHTML = `<tr><td colspan="8" style="text-align: center; color: var(--text-muted); padding: 25px; font-style: italic;">No equipment records found matching the filters.</td></tr>`;
+        tableBody.innerHTML = `<tr><td colspan="8" style="text-align: center; color: var(--text-muted); padding: 25px; font-style: italic;">No equipment records found in this view.</td></tr>`;
         return;
       }
 
       filtered.forEach(item => {
         const tr = document.createElement("tr");
-        const icon = deptIcons[item.dept] || "⚙️";
+        const iconUrl = deptIcons[item.dept] || deptIcons["Mechanics"];
         const duration = calculateDuration(item.entryDate, item.exitDate);
 
         tr.innerHTML = `
@@ -965,7 +1017,7 @@
           <td><span class="duration-badge">${duration}</span></td>
           <td>
             <div class="dept-cell">
-              <span class="dept-icon">${icon}</span>
+              <img src="${iconUrl}" alt="${item.dept}" class="dept-icon-img">
               <span>${item.dept || "N/A"}</span>
             </div>
           </td>
@@ -1024,7 +1076,7 @@
         emptyMsg.style.display = "none";
         items.forEach(item => {
           const tr = document.createElement("tr");
-          const icon = deptIcons[item.dept] || "⚙️";
+          const iconUrl = deptIcons[item.dept] || deptIcons["Mechanics"];
           const duration = calculateDuration(item.entryDate, item.exitDate);
 
           tr.innerHTML = `
@@ -1050,7 +1102,7 @@
             <td><span class="duration-badge">${duration}</span></td>
             <td>
               <div class="dept-cell">
-                <span class="dept-icon">${icon}</span>
+                <img src="${iconUrl}" alt="${item.dept}" class="dept-icon-img">
                 <span>${item.dept || "N/A"}</span>
               </div>
             </td>
