@@ -451,7 +451,7 @@
             <input type="date" id="eq-exit-date">
           </div>
           <div class="form-group">
-            <label>Exit Project (Destination Project)</label>
+            <label>Exit Project (Destination Project - Moves to Archive)</label>
             <input type="text" id="eq-exit-project" placeholder="e.g. Monorail Site">
           </div>
           <div class="form-group">
@@ -840,12 +840,21 @@
       const name = document.getElementById("eq-name").value.trim();
       const code = document.getElementById("eq-code").value.trim();
       const project = document.getElementById("eq-project").value.trim();
-      const exitProject = document.getElementById("eq-exit-project").value.trim();
+      let exitProject = document.getElementById("eq-exit-project").value.trim();
       const entryDate = document.getElementById("eq-entry-date").value;
-      const exitDate = document.getElementById("eq-exit-date").value;
+      let exitDate = document.getElementById("eq-exit-date").value;
       const report = document.getElementById("eq-report").value.trim();
       const dept = document.getElementById("eq-dept").value;
-      const status = document.getElementById("eq-status").value;
+      let status = document.getElementById("eq-status").value;
+
+      // تحقق أوتوماتيكي: إذا وُجد مشروع خروج (Exit Project)، تُعتبر المعدة منقولة للأرشيف
+      if (exitProject) {
+        status = "Dispatched";
+        if (!exitDate) {
+          // وضع تاريخ اليوم كافتراقي للخروج إذا لم يتم تحديده
+          exitDate = new Date().toISOString().split('T')[0];
+        }
+      }
 
       try {
         if (editId) {
@@ -942,7 +951,8 @@
       const deptFilter = document.getElementById("dept-filter").value;
 
       const baseList = equipmentList.filter(item => {
-        const isDispatched = (item.status === "Dispatched" || item.exitDate);
+        // شرط الأرشيف: إذا تم كتابة exitProject أو أصبحت الحالة Dispatched تنتقل فوراً للأرشيف
+        const isDispatched = (Boolean(item.exitProject && item.exitProject.trim() !== "") || item.status === "Dispatched" || Boolean(item.exitDate));
         return currentView === "active" ? !isDispatched : isDispatched;
       });
 
@@ -972,7 +982,7 @@
       document.getElementById("waiting-count").textContent = equipmentList.filter(i => i.status === "Waiting").length;
       document.getElementById("delay-count").textContent = equipmentList.filter(i => i.status === "Delay").length;
       document.getElementById("external-count").textContent = equipmentList.filter(i => i.status === "External").length;
-      document.getElementById("dispatched-count").textContent = equipmentList.filter(i => i.status === "Dispatched" || i.exitDate).length;
+      document.getElementById("dispatched-count").textContent = equipmentList.filter(i => Boolean(i.exitProject && i.exitProject.trim() !== "") || i.status === "Dispatched" || Boolean(i.exitDate)).length;
 
       // Calculate Annual Totals
       let totalReceivedMonthly = monthlyStats.reduce((sum, m) => sum + (Number(m.received) || 0), 0);
@@ -980,8 +990,8 @@
       let totalRepairedMonthly = monthlyStats.reduce((sum, m) => sum + (Number(m.repaired) || 0), 0);
 
       document.getElementById("annual-entered-count").textContent = totalReceivedMonthly > 0 ? totalReceivedMonthly : equipmentList.length;
-      document.getElementById("annual-exited-count").textContent = totalDispatchedMonthly > 0 ? totalDispatchedMonthly : equipmentList.filter(i => i.status === "Dispatched" || i.exitDate).length;
-      document.getElementById("annual-ready-count").textContent = totalRepairedMonthly > 0 ? totalRepairedMonthly : equipmentList.filter(i => i.status === "Ready" || i.status === "Dispatched" || i.exitDate).length;
+      document.getElementById("annual-exited-count").textContent = totalDispatchedMonthly > 0 ? totalDispatchedMonthly : equipmentList.filter(i => Boolean(i.exitProject && i.exitProject.trim() !== "") || i.status === "Dispatched" || Boolean(i.exitDate)).length;
+      document.getElementById("annual-ready-count").textContent = totalRepairedMonthly > 0 ? totalRepairedMonthly : equipmentList.filter(i => i.status === "Ready" || Boolean(i.exitProject && i.exitProject.trim() !== "") || i.status === "Dispatched" || Boolean(i.exitDate)).length;
 
       tableBody.innerHTML = "";
       if (filtered.length === 0) {
@@ -1088,7 +1098,7 @@
             </td>
             <td><strong>${item.name || "N/A"}</strong></td>
             <td>
-              <div class="project-cell-container">
+              <div class="project-project-container" style="display: flex; flex-direction: column; gap: 2px;">
                 <span class="project-tag">In: ${item.project || "N/A"}</span>
                 ${item.exitProject ? `<span class="exit-project-tag">Out: ${item.exitProject}</span>` : ""}
               </div>
