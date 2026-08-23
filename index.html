@@ -381,7 +381,7 @@
       </div>
     </div>
 
-    <!-- Annual Totals Section (Year 2026 cumulative from monthly stats) -->
+    <!-- Annual Totals Section -->
     <div class="annual-banner">
       <h2>📅 Cumulative Totals Since Start of Year (2026)</h2>
       <div class="annual-stats-grid">
@@ -403,7 +403,7 @@
     <!-- Section 1: Equipment Inventory -->
     <div class="content-grid" id="main-grid">
       
-      <!-- Form: Add / Edit Equipment (Admin Only) -->
+      <!-- Form: Add / Edit Equipment -->
       <div class="form-panel" id="admin-form-panel">
         <h2 id="form-panel-title">Add New Equipment</h2>
         <form id="equipment-form">
@@ -524,7 +524,7 @@
     <!-- Section 2: Monthly Statistics -->
     <div class="content-grid" id="monthly-grid">
       
-      <!-- Form: Log Monthly Record (Admin Only) -->
+      <!-- Form: Log Monthly Record -->
       <div class="form-panel" id="admin-monthly-panel">
         <h2>Log Monthly Report</h2>
         <form id="monthly-form">
@@ -663,6 +663,8 @@
     // Real-time listener for Firestore Monthly Stats Collection
     onSnapshot(collection(db, "monthly_stats"), (snapshot) => {
       monthlyStats = snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
+      // Sort monthly stats chronologically by month string (e.g. "2026-01", "2026-02", ...)
+      monthlyStats.sort((a, b) => (a.month || "").localeCompare(b.month || ""));
       renderMonthly();
       render();
     }, (error) => {
@@ -905,12 +907,11 @@
       document.getElementById("external-count").textContent = equipmentList.filter(i => i.status === "External").length;
       document.getElementById("dispatched-count").textContent = equipmentList.filter(i => i.status === "Dispatched").length;
 
-      // Calculate Annual Totals from Monthly Statistics Table (Summing up to July / all logged months)
+      // Calculate Annual Totals from Monthly Statistics Table
       let totalReceivedMonthly = monthlyStats.reduce((sum, m) => sum + (Number(m.received) || 0), 0);
       let totalDispatchedMonthly = monthlyStats.reduce((sum, m) => sum + (Number(m.dispatched) || 0), 0);
       let totalRepairedMonthly = monthlyStats.reduce((sum, m) => sum + (Number(m.repaired) || 0), 0);
 
-      // Fallback to equipment list length if no monthly stats are logged yet
       document.getElementById("annual-entered-count").textContent = totalReceivedMonthly > 0 ? totalReceivedMonthly : equipmentList.length;
       document.getElementById("annual-exited-count").textContent = totalDispatchedMonthly > 0 ? totalDispatchedMonthly : equipmentList.filter(i => i.status === "Dispatched").length;
       document.getElementById("annual-ready-count").textContent = totalRepairedMonthly > 0 ? totalRepairedMonthly : equipmentList.filter(i => i.status === "Ready" || i.status === "Dispatched").length;
