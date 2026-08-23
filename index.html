@@ -172,24 +172,25 @@
     .filters-wrapper {
       display: flex;
       align-items: center;
-      gap: 15px;
+      gap: 12px;
       flex-wrap: wrap;
     }
     .filter-container {
       display: flex;
       align-items: center;
-      gap: 8px;
-      font-size: 13px;
+      gap: 6px;
+      font-size: 12px;
       font-weight: bold;
       color: var(--navy);
     }
-    .filter-container select {
-      padding: 5px 10px;
+    .filter-container select, .filter-container input {
+      padding: 5px 8px;
       border: 1px solid var(--border-color);
       border-radius: 4px;
       font-size: 12px;
       font-weight: bold;
     }
+    .filter-container input { font-weight: normal; width: 120px; }
 
     table { width: 100%; border-collapse: collapse; font-size: 13px; }
     th, td { padding: 10px; text-align: left; border-bottom: 1px solid var(--border-color); vertical-align: middle; }
@@ -467,6 +468,10 @@
         <div class="table-panel-header">
           <h2>Equipment Inventory Table</h2>
           <div class="filters-wrapper">
+            <div class="filter-container">
+              <label for="code-filter">Code:</label>
+              <input type="text" id="code-filter" placeholder="Search Code..." oninput="render()">
+            </div>
             <div class="filter-container">
               <label for="project-filter">Project:</label>
               <select id="project-filter" onchange="render()">
@@ -842,13 +847,15 @@
     }
 
     function render() {
+      const codeQuery = document.getElementById("code-filter").value.trim().toLowerCase();
       const selectedProject = document.getElementById("project-filter").value;
       const selectedDept = document.getElementById("dept-filter").value;
 
       let filtered = equipmentList.filter(item => {
+        const matchCode = !codeQuery || (item.code && item.code.toLowerCase().includes(codeQuery));
         const matchProject = (selectedProject === "All" || item.project === selectedProject);
         const matchDept = (selectedDept === "All" || item.dept === selectedDept);
-        return matchProject && matchDept;
+        return matchCode && matchProject && matchDept;
       });
 
       // Update Dashboard Counters
