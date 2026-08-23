@@ -423,69 +423,8 @@
     </div>
 
     <!-- Section 1: Equipment Inventory -->
-    <div class="content-grid" id="main-grid">
+    <div class="content-grid full-width" id="main-grid" style="grid-template-columns: 1fr;">
       
-      <!-- Form: Add / Edit Equipment -->
-      <div class="form-panel" id="admin-form-panel">
-        <h2 id="form-panel-title">Add New Equipment</h2>
-        <form id="equipment-form">
-          <input type="hidden" id="edit-eq-id">
-          <div class="form-group">
-            <label>Equipment Name</label>
-            <input type="text" id="eq-name" placeholder="e.g. Caterpillar Excavator" required>
-          </div>
-          <div class="form-group">
-            <label>Equipment Code</label>
-            <input type="text" id="eq-code" placeholder="e.g. EQ-10020" required>
-          </div>
-          <div class="form-group">
-            <label>Entry Project (Incoming Project)</label>
-            <input type="text" id="eq-project" placeholder="e.g. Dabaa Project" required>
-          </div>
-          <div class="form-group">
-            <label>Entry Date</label>
-            <input type="date" id="eq-entry-date" required>
-          </div>
-          <div class="form-group">
-            <label>Exit Date</label>
-            <input type="date" id="eq-exit-date">
-          </div>
-          <div class="form-group">
-            <label>Exit Project (Destination Project - Moves to Archive)</label>
-            <input type="text" id="eq-exit-project" placeholder="e.g. Monorail Site">
-          </div>
-          <div class="form-group">
-            <label>Condition / Status Report</label>
-            <input type="text" id="eq-report" placeholder="e.g. Hydraulic pump issue / Overhaul">
-          </div>
-          <div class="form-group">
-            <label>Department / Workshop Stage</label>
-            <select id="eq-dept" required>
-              <option value="Mechanics">Mechanics</option>
-              <option value="Denting">Denting</option>
-              <option value="Blacksmith">Blacksmith</option>
-              <option value="Welding">Welding</option>
-              <option value="Painting">Painting</option>
-              <option value="Electric">Electric</option>
-              <option value="Testing">Testing</option>
-            </select>
-          </div>
-          <div class="form-group">
-            <label>Current Status</label>
-            <select id="eq-status" required>
-              <option value="Ready">Ready</option>
-              <option value="In Progress">In Progress</option>
-              <option value="Waiting">Waiting</option>
-              <option value="Delay">Delay</option>
-              <option value="External">External</option>
-              <option value="Dispatched">Dispatched / Exited</option>
-            </select>
-          </div>
-          <button type="submit" class="btn-add" id="form-submit-btn">+ Add Equipment</button>
-          <button type="button" class="btn-cancel-edit" id="cancel-edit-btn" onclick="cancelEdit()">Cancel Edit</button>
-        </form>
-      </div>
-
       <!-- Table: Equipment List with Tabs -->
       <div class="table-panel">
         <!-- View Switch Tabs -->
@@ -549,12 +488,72 @@
 
     </div>
 
-    <!-- Section 2: Monthly Statistics -->
+    <!-- Section 2: Form & Monthly Statistics (Moved to Bottom) -->
     <div class="content-grid" id="monthly-grid">
       
-      <!-- Form: Log Monthly Record -->
-      <div class="form-panel" id="admin-monthly-panel">
-        <h2>Log Monthly Report</h2>
+      <!-- Form: Add / Edit Equipment & Log Monthly -->
+      <div class="form-panel" id="admin-form-panel">
+        <h2 id="form-panel-title">Add New Equipment</h2>
+        <form id="equipment-form">
+          <input type="hidden" id="edit-eq-id">
+          <div class="form-group">
+            <label>Equipment Name</label>
+            <input type="text" id="eq-name" placeholder="e.g. Caterpillar Excavator" required>
+          </div>
+          <div class="form-group">
+            <label>Equipment Code</label>
+            <input type="text" id="eq-code" placeholder="e.g. EQ-10020" required>
+          </div>
+          <div class="form-group">
+            <label>Entry Project (Incoming Project)</label>
+            <input type="text" id="eq-project" placeholder="e.g. Dabaa Project" required>
+          </div>
+          <div class="form-group">
+            <label>Entry Date</label>
+            <input type="date" id="eq-entry-date" required>
+          </div>
+          <div class="form-group">
+            <label>Exit Date</label>
+            <input type="date" id="eq-exit-date">
+          </div>
+          <div class="form-group">
+            <label>Exit Project (Destination Project - Moves to Archive)</label>
+            <input type="text" id="eq-exit-project" placeholder="e.g. Monorail Site">
+          </div>
+          <div class="form-group">
+            <label>Condition / Status Report</label>
+            <input type="text" id="eq-report" placeholder="e.g. Hydraulic pump issue / Overhaul">
+          </div>
+          <div class="form-group">
+            <label>Department / Workshop Stage</label>
+            <select id="eq-dept" required>
+              <option value="Mechanics">Mechanics</option>
+              <option value="Denting">Denting</option>
+              <option value="Blacksmith">Blacksmith</option>
+              <option value="Welding">Welding</option>
+              <option value="Painting">Painting</option>
+              <option value="Electric">Electric</option>
+              <option value="Testing">Testing</option>
+            </select>
+          </div>
+          <div class="form-group">
+            <label>Current Status</label>
+            <select id="eq-status" required>
+              <option value="Ready">Ready</option>
+              <option value="In Progress">In Progress</option>
+              <option value="Waiting">Waiting</option>
+              <option value="Delay">Delay</option>
+              <option value="External">External</option>
+              <option value="Dispatched">Dispatched / Exited</option>
+            </select>
+          </div>
+          <button type="submit" class="btn-add" id="form-submit-btn">+ Add Equipment</button>
+          <button type="button" class="btn-cancel-edit" id="cancel-edit-btn" onclick="cancelEdit()">Cancel Edit</button>
+        </form>
+
+        <hr style="margin: 20px 0; border: none; border-top: 1px solid var(--border-color);">
+
+        <h2 style="margin-top: 0;">Log Monthly Report</h2>
         <form id="monthly-form">
           <div class="form-group">
             <label>Month</label>
@@ -659,7 +658,6 @@
       "viewer": { pass: "user123", role: "viewer" }
     };
 
-    // Professional SVG icons representing heavy equipment departments
     const deptIcons = {
       "Mechanics": "https://api.iconify.design/fluent-emoji-flat:gear.svg",
       "Denting": "https://api.iconify.design/fluent-emoji-flat:hammer-and-wrench.svg",
@@ -678,7 +676,6 @@
     const form = document.getElementById("equipment-form");
     const monthlyForm = document.getElementById("monthly-form");
     const adminPanel = document.getElementById("admin-form-panel");
-    const adminMonthlyPanel = document.getElementById("admin-monthly-panel");
     const mainGrid = document.getElementById("main-grid");
     const monthlyGrid = document.getElementById("monthly-grid");
 
@@ -819,14 +816,10 @@
       const adminCols = document.querySelectorAll(".admin-action-col");
       if (currentRole === "viewer") {
         adminPanel.style.display = "none";
-        adminMonthlyPanel.style.display = "none";
-        mainGrid.classList.add("full-width");
         monthlyGrid.classList.add("full-width");
         adminCols.forEach(col => col.style.display = "none");
       } else {
         adminPanel.style.display = "block";
-        adminMonthlyPanel.style.display = "block";
-        mainGrid.classList.remove("full-width");
         monthlyGrid.classList.remove("full-width");
         adminCols.forEach(col => col.style.display = "table-cell");
       }
@@ -1141,7 +1134,6 @@
       }
     }
 
-    // Set default entry date to today on load
     document.getElementById("eq-entry-date").valueAsDate = new Date();
   </script>
 </body>
