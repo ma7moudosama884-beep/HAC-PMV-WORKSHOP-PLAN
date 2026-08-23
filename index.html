@@ -963,7 +963,7 @@
     }
 
     function render() {
-      // 1. Filter equipment based on current View tab (Active vs Archive)
+      // 1. Filter equipment strictly based on Current Status = "Dispatched" for Archive tab
       const filteredByView = equipmentList.filter(item => {
         const isDispatched = (item.status === "Dispatched");
         if (currentView === "archive") {
@@ -988,7 +988,7 @@
         return matchesName && matchesCode && matchesProject && matchesDept;
       });
 
-      // Update Top Status Cards counts (computed from entire equipment list)
+      // Update Top Status Cards counts strictly based on item.status
       let total = equipmentList.length;
       let ready = 0, progress = 0, waiting = 0, delay = 0, external = 0, dispatched = 0;
 
@@ -1089,9 +1089,6 @@
 
       const matchingItems = equipmentList.filter(item => {
         if (statusCategory === 'All') return true;
-        if (statusCategory === 'Dispatched') {
-          return item.status === "Dispatched";
-        }
         return item.status === statusCategory;
       });
 
