@@ -96,7 +96,7 @@
     .container { padding: 25px; max-width: 1400px; margin: 0 auto; flex: 1; width: 100%; }
     
     /* Summary Cards */
-    .summary-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(140px, 1fr)); gap: 15px; margin-bottom: 20px; }
+    .summary-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(140px, 1fr)); gap: 15px; margin-bottom: 25px; }
     .stat-card { 
       background: var(--card-bg); 
       padding: 15px; 
@@ -121,6 +121,7 @@
       color: #ffffff;
       padding: 18px 25px;
       border-radius: 8px;
+      margin-top: 25px;
       margin-bottom: 25px;
       box-shadow: 0 4px 12px rgba(0,0,0,0.1);
     }
@@ -164,7 +165,7 @@
     }
 
     /* Content Layout */
-    .content-grid { display: grid; grid-template-columns: 320px 1fr; gap: 25px; transition: all 0.3s ease; margin-bottom: 25px; }
+    .content-grid { display: grid; grid-template-columns: 320px 1fr; gap: 25px; transition: all 0.3s ease; margin-bottom: 25px; align-items: start; }
     .content-grid.full-width { grid-template-columns: 1fr; }
 
     /* Form Section */
@@ -403,29 +404,71 @@
       </div>
     </div>
 
-    <!-- Annual Totals Section -->
-    <div class="annual-banner">
-      <h2>📅 Cumulative Totals Since Start of Year (2026)</h2>
-      <div class="annual-stats-grid">
-        <div class="annual-item">
-          <span>Total Entered Workshop</span>
-          <strong id="annual-entered-count">0</strong>
-        </div>
-        <div class="annual-item exited">
-          <span>Total Dispatched / Exited</span>
-          <strong id="annual-exited-count">0</strong>
-        </div>
-        <div class="annual-item ready-done">
-          <span>Total Repaired / Ready</span>
-          <strong id="annual-ready-count">0</strong>
-        </div>
-      </div>
-    </div>
-
-    <!-- Section 1: Equipment Inventory -->
-    <div class="content-grid full-width" id="main-grid" style="grid-template-columns: 1fr;">
+    <!-- Section 1: Form & Equipment Inventory Table (Side-by-Side at Top) -->
+    <div class="content-grid" id="main-grid">
       
-      <!-- Table: Equipment List with Tabs -->
+      <!-- Form: Add / Edit Equipment -->
+      <div class="form-panel" id="admin-form-panel">
+        <h2 id="form-panel-title">Add New Equipment</h2>
+        <form id="equipment-form">
+          <input type="hidden" id="edit-eq-id">
+          <div class="form-group">
+            <label>Equipment Name</label>
+            <input type="text" id="eq-name" placeholder="e.g. Caterpillar Excavator" required>
+          </div>
+          <div class="form-group">
+            <label>Equipment Code</label>
+            <input type="text" id="eq-code" placeholder="e.g. EQ-10020" required>
+          </div>
+          <div class="form-group">
+            <label>Entry Project (Incoming Project)</label>
+            <input type="text" id="eq-project" placeholder="e.g. Dabaa Project" required>
+          </div>
+          <div class="form-group">
+            <label>Entry Date</label>
+            <input type="date" id="eq-entry-date" required>
+          </div>
+          <div class="form-group">
+            <label>Exit Date</label>
+            <input type="date" id="eq-exit-date">
+          </div>
+          <div class="form-group">
+            <label>Exit Project (Destination Project - Moves to Archive)</label>
+            <input type="text" id="eq-exit-project" placeholder="e.g. Monorail Site">
+          </div>
+          <div class="form-group">
+            <label>Condition / Status Report</label>
+            <input type="text" id="eq-report" placeholder="e.g. Hydraulic pump issue / Overhaul">
+          </div>
+          <div class="form-group">
+            <label>Department / Workshop Stage</label>
+            <select id="eq-dept" required>
+              <option value="Mechanics">Mechanics</option>
+              <option value="Denting">Denting</option>
+              <option value="Blacksmith">Blacksmith</option>
+              <option value="Welding">Welding</option>
+              <option value="Painting">Painting</option>
+              <option value="Electric">Electric</option>
+              <option value="Testing">Testing</option>
+            </select>
+          </div>
+          <div class="form-group">
+            <label>Current Status</label>
+            <select id="eq-status" required>
+              <option value="Ready">Ready</option>
+              <option value="In Progress">In Progress</option>
+              <option value="Waiting">Waiting</option>
+              <option value="Delay">Delay</option>
+              <option value="External">External</option>
+              <option value="Dispatched">Dispatched / Exited</option>
+            </select>
+          </div>
+          <button type="submit" class="btn-add" id="form-submit-btn">+ Add Equipment</button>
+          <button type="button" class="btn-cancel-edit" id="cancel-edit-btn" onclick="cancelEdit()">Cancel Edit</button>
+        </form>
+      </div>
+
+      <!-- Equipment Table Panel -->
       <div class="table-panel">
         <!-- View Switch Tabs -->
         <div class="view-tabs">
@@ -488,96 +531,35 @@
 
     </div>
 
-    <!-- Section 2: Form & Monthly Statistics (Moved to Bottom) -->
-    <div class="content-grid" id="monthly-grid">
-      
-      <!-- Form: Add / Edit Equipment & Log Monthly -->
-      <div class="form-panel" id="admin-form-panel">
-        <h2 id="form-panel-title">Add New Equipment</h2>
-        <form id="equipment-form">
-          <input type="hidden" id="edit-eq-id">
-          <div class="form-group">
-            <label>Equipment Name</label>
-            <input type="text" id="eq-name" placeholder="e.g. Caterpillar Excavator" required>
-          </div>
-          <div class="form-group">
-            <label>Equipment Code</label>
-            <input type="text" id="eq-code" placeholder="e.g. EQ-10020" required>
-          </div>
-          <div class="form-group">
-            <label>Entry Project (Incoming Project)</label>
-            <input type="text" id="eq-project" placeholder="e.g. Dabaa Project" required>
-          </div>
-          <div class="form-group">
-            <label>Entry Date</label>
-            <input type="date" id="eq-entry-date" required>
-          </div>
-          <div class="form-group">
-            <label>Exit Date</label>
-            <input type="date" id="eq-exit-date">
-          </div>
-          <div class="form-group">
-            <label>Exit Project (Destination Project - Moves to Archive)</label>
-            <input type="text" id="eq-exit-project" placeholder="e.g. Monorail Site">
-          </div>
-          <div class="form-group">
-            <label>Condition / Status Report</label>
-            <input type="text" id="eq-report" placeholder="e.g. Hydraulic pump issue / Overhaul">
-          </div>
-          <div class="form-group">
-            <label>Department / Workshop Stage</label>
-            <select id="eq-dept" required>
-              <option value="Mechanics">Mechanics</option>
-              <option value="Denting">Denting</option>
-              <option value="Blacksmith">Blacksmith</option>
-              <option value="Welding">Welding</option>
-              <option value="Painting">Painting</option>
-              <option value="Electric">Electric</option>
-              <option value="Testing">Testing</option>
-            </select>
-          </div>
-          <div class="form-group">
-            <label>Current Status</label>
-            <select id="eq-status" required>
-              <option value="Ready">Ready</option>
-              <option value="In Progress">In Progress</option>
-              <option value="Waiting">Waiting</option>
-              <option value="Delay">Delay</option>
-              <option value="External">External</option>
-              <option value="Dispatched">Dispatched / Exited</option>
-            </select>
-          </div>
-          <button type="submit" class="btn-add" id="form-submit-btn">+ Add Equipment</button>
-          <button type="button" class="btn-cancel-edit" id="cancel-edit-btn" onclick="cancelEdit()">Cancel Edit</button>
-        </form>
-
-        <hr style="margin: 20px 0; border: none; border-top: 1px solid var(--border-color);">
-
-        <h2 style="margin-top: 0;">Log Monthly Report</h2>
-        <form id="monthly-form">
-          <div class="form-group">
-            <label>Month</label>
-            <input type="month" id="m-month" required>
-          </div>
-          <div class="form-group">
-            <label>Received Equipment</label>
-            <input type="number" id="m-received" min="0" placeholder="0" required>
-          </div>
-          <div class="form-group">
-            <label>Repaired Equipment</label>
-            <input type="number" id="m-repaired" min="0" placeholder="0" required>
-          </div>
-          <div class="form-group">
-            <label>Dispatched / Released</label>
-            <input type="number" id="m-dispatched" min="0" placeholder="0" required>
-          </div>
-          <button type="submit" class="btn-add">+ Log Month</button>
-        </form>
-      </div>
-
+    <!-- Section 2: Monthly Statistics & Log Form (Bottom) -->
+    <div class="content-grid full-width" id="monthly-grid">
       <!-- Table: Monthly Performance -->
       <div class="table-panel">
-        <h2>Monthly PMV Performance Statistics</h2>
+        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px; flex-wrap: wrap; gap: 15px;">
+          <h2 style="margin: 0;">Monthly PMV Performance Statistics</h2>
+          
+          <!-- Monthly Log Form Inline / Compact -->
+          <form id="monthly-form" style="display: flex; gap: 10px; align-items: center; flex-wrap: wrap;">
+            <div style="display: flex; flex-direction: column;">
+              <label style="font-size: 10px; font-weight: bold; color: var(--text-muted);">Month</label>
+              <input type="month" id="m-month" required style="padding: 5px; border: 1px solid var(--border-color); border-radius: 4px; font-size: 12px;">
+            </div>
+            <div style="display: flex; flex-direction: column;">
+              <label style="font-size: 10px; font-weight: bold; color: var(--text-muted);">Received</label>
+              <input type="number" id="m-received" min="0" placeholder="0" required style="width: 75px; padding: 5px; border: 1px solid var(--border-color); border-radius: 4px; font-size: 12px;">
+            </div>
+            <div style="display: flex; flex-direction: column;">
+              <label style="font-size: 10px; font-weight: bold; color: var(--text-muted);">Repaired</label>
+              <input type="number" id="m-repaired" min="0" placeholder="0" required style="width: 75px; padding: 5px; border: 1px solid var(--border-color); border-radius: 4px; font-size: 12px;">
+            </div>
+            <div style="display: flex; flex-direction: column;">
+              <label style="font-size: 10px; font-weight: bold; color: var(--text-muted);">Dispatched</label>
+              <input type="number" id="m-dispatched" min="0" placeholder="0" required style="width: 75px; padding: 5px; border: 1px solid var(--border-color); border-radius: 4px; font-size: 12px;">
+            </div>
+            <button type="submit" class="btn-add" style="margin-top: 15px; padding: 6px 12px; width: auto;">+ Log Month</button>
+          </form>
+        </div>
+
         <table>
           <thead>
             <tr>
@@ -593,7 +575,25 @@
           </tbody>
         </table>
       </div>
+    </div>
 
+    <!-- Section 3: Annual Totals Banner (Bottom) -->
+    <div class="annual-banner">
+      <h2>📅 Cumulative Totals Since Start of Year (2026)</h2>
+      <div class="annual-stats-grid">
+        <div class="annual-item">
+          <span>Total Entered Workshop (From Monthly Stats)</span>
+          <strong id="annual-entered-count">0</strong>
+        </div>
+        <div class="annual-item exited">
+          <span>Total Dispatched / Exited (From Monthly Stats)</span>
+          <strong id="annual-exited-count">0</strong>
+        </div>
+        <div class="annual-item ready-done">
+          <span>Total Repaired / Ready (From Monthly Stats)</span>
+          <strong id="annual-ready-count">0</strong>
+        </div>
+      </div>
     </div>
 
   </div>
@@ -677,7 +677,6 @@
     const monthlyForm = document.getElementById("monthly-form");
     const adminPanel = document.getElementById("admin-form-panel");
     const mainGrid = document.getElementById("main-grid");
-    const monthlyGrid = document.getElementById("monthly-grid");
 
     // Real-time listener for Firestore Equipment Collection
     onSnapshot(collection(db, "equipment"), (snapshot) => {
@@ -816,11 +815,11 @@
       const adminCols = document.querySelectorAll(".admin-action-col");
       if (currentRole === "viewer") {
         adminPanel.style.display = "none";
-        monthlyGrid.classList.add("full-width");
+        mainGrid.classList.add("full-width");
         adminCols.forEach(col => col.style.display = "none");
       } else {
         adminPanel.style.display = "block";
-        monthlyGrid.classList.remove("full-width");
+        mainGrid.classList.remove("full-width");
         adminCols.forEach(col => col.style.display = "table-cell");
       }
       render();
@@ -1003,16 +1002,17 @@
       document.getElementById("external-count").textContent = external;
       document.getElementById("dispatched-count").textContent = dispatched;
 
-      // Cumulative Annual Totals (Year 2026)
+      // Cumulative Annual Totals calculated strictly from Monthly PMV Performance Statistics
       let annualEntered = 0;
-      let annualExited = dispatched;
-      let annualReady = ready;
+      let annualExited = 0;
+      let annualReady = 0;
 
-      equipmentList.forEach(item => {
-        if (item.entryDate && item.entryDate.startsWith("2026")) {
-          annualEntered++;
-        }
+      monthlyStats.forEach(stat => {
+        annualEntered += Number(stat.received || 0);
+        annualExited += Number(stat.dispatched || 0);
+        annualReady += Number(stat.repaired || 0);
       });
+
       document.getElementById("annual-entered-count").textContent = annualEntered;
       document.getElementById("annual-exited-count").textContent = annualExited;
       document.getElementById("annual-ready-count").textContent = annualReady;
