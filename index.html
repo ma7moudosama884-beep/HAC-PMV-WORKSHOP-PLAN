@@ -663,7 +663,6 @@
     // Real-time listener for Firestore Monthly Stats Collection
     onSnapshot(collection(db, "monthly_stats"), (snapshot) => {
       monthlyStats = snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
-      // Sort monthly stats chronologically by month string (e.g. "2026-01", "2026-02", ...)
       monthlyStats.sort((a, b) => (a.month || "").localeCompare(b.month || ""));
       renderMonthly();
       render();
@@ -684,16 +683,17 @@
       return diffDays >= 0 ? `${diffDays} Days` : "0 Days";
     }
 
-    function getFirstWord(str) {
-      if (!str) return "";
-      return str.trim().split(/\s+/)[0];
-    }
-
     function updateDropdowns() {
+      // 1. Projects Dropdown
       const projectFilterSelect = document.getElementById("project-filter");
       if(projectFilterSelect) {
         const currentSelectedProj = projectFilterSelect.value;
-        const projects = [...new Set(equipmentList.map(item => item.project).filter(Boolean))];
+        const projectsSet = new Set();
+        equipmentList.forEach(item => {
+          if (item.project) projectsSet.add(item.project.trim());
+          if (item.exitProject) projectsSet.add(item.exitProject.trim());
+        });
+        const projects = [...projectsSet].sort();
         
         projectFilterSelect.innerHTML = `<option value="All">All Projects</option>`;
         projects.forEach(proj => {
@@ -708,20 +708,25 @@
         }
       }
 
+      // 2. Equipment Type / Names Dropdown
       const nameFilterSelect = document.getElementById("name-filter");
       if(nameFilterSelect) {
         const currentSelectedName = nameFilterSelect.value;
-        const firstWords = [...new Set(equipmentList.map(item => getFirstWord(item.name)).filter(Boolean))];
+        const namesSet = new Set();
+        equipmentList.forEach(item => {
+          if (item.name) namesSet.add(item.name.trim());
+        });
+        const names = [...namesSet].sort();
 
         nameFilterSelect.innerHTML = `<option value="All">All Types</option>`;
-        firstWords.forEach(word => {
+        names.forEach(name => {
           const opt = document.createElement("option");
-          opt.value = word;
-          opt.textContent = word;
+          opt.value = name;
+          opt.textContent = name;
           nameFilterSelect.appendChild(opt);
         });
 
-        if (firstWords.includes(currentSelectedName)) {
+        if (names.includes(currentSelectedName)) {
           nameFilterSelect.value = currentSelectedName;
         }
       }
@@ -883,18 +888,28 @@
       }
     }
 
-    function render() {
+    window.render = function() {
       const nameFilter = document.getElementById("name-filter").value;
-      const codeFilter = document.getElementById("code-filter").value.toLowerCase();
+      const codeFilter = document.getElementById("code-filter").value.toLowerCase().trim();
       const projectFilter = document.getElementById("project-filter").value;
       const deptFilter = document.getElementById("dept-filter").value;
 
       const filtered = equipmentList.filter(item => {
-        const itemFirstWord = getFirstWord(item.name);
-        const matchesName = (nameFilter === "All" || itemFirstWord === nameFilter);
-        const matchesCode = (!codeFilter || (item.code && item.code.toLowerCase().includes(codeFilter)) || (item.report && item.report.toLowerCase().includes(codeFilter)));
-        const matchesProject = (projectFilter === "All" || item.project === projectFilter || item.exitProject === projectFilter);
+        const itemName = item.name ? item.name.trim() : "";
+        const matchesName = (nameFilter === "All" || itemName === nameFilter);
+        
+        const matchesCode = (!codeFilter || 
+          (item.code && item.code.toLowerCase().includes(codeFilter)) || 
+          (item.report && item.report.toLowerCase().includes(codeFilter))
+        );
+
+        const matchesProject = (projectFilter === "All" || 
+          (item.project && item.project.trim() === projectFilter) || 
+          (item.exitProject && item.exitProject.trim() === projectFilter)
+        );
+
         const matchesDept = (deptFilter === "All" || item.dept === deptFilter);
+
         return matchesName && matchesCode && matchesProject && matchesDept;
       });
 
@@ -907,7 +922,7 @@
       document.getElementById("external-count").textContent = equipmentList.filter(i => i.status === "External").length;
       document.getElementById("dispatched-count").textContent = equipmentList.filter(i => i.status === "Dispatched").length;
 
-      // Calculate Annual Totals from Monthly Statistics Table
+      // Calculate Annual Totals
       let totalReceivedMonthly = monthlyStats.reduce((sum, m) => sum + (Number(m.received) || 0), 0);
       let totalDispatchedMonthly = monthlyStats.reduce((sum, m) => sum + (Number(m.dispatched) || 0), 0);
       let totalRepairedMonthly = monthlyStats.reduce((sum, m) => sum + (Number(m.repaired) || 0), 0);
