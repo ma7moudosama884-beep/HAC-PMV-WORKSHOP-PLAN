@@ -625,9 +625,7 @@
           <div class="filters-wrapper">
             <div class="filter-container">
               <label for="name-filter">Equipment Type:</label>
-              <select id="name-filter" onchange="render()">
-                <option value="All">All Types</option>
-              </select>
+              <input type="text" id="name-filter" placeholder="Search Type..." oninput="render()">
             </div>
             <div class="filter-container">
               <label for="code-filter">Code:</label>
@@ -868,18 +866,10 @@
     };
 
     function updateDropdowns() {
-      const nameFilter = document.getElementById("name-filter");
       const projectFilter = document.getElementById("project-filter");
-      
-      const currentSelectedName = nameFilter.value;
       const currentSelectedProject = projectFilter.value;
 
-      const uniqueNames = [...new Set(equipmentList.map(item => item.name))].sort();
       const uniqueProjects = [...new Set(equipmentList.map(item => item.project))].sort();
-
-      nameFilter.innerHTML = '<option value="All">All Types</option>' + 
-        uniqueNames.map(n => `<option value="${n}">${n}</option>`).join('');
-      nameFilter.value = uniqueNames.includes(currentSelectedName) ? currentSelectedName : "All";
 
       projectFilter.innerHTML = '<option value="All">All Projects</option>' + 
         uniqueProjects.map(p => `<option value="${p}">${p}</option>`).join('');
@@ -997,7 +987,6 @@
       }
     };
 
-    // فتح نافذة طلب النقل للمشاهدين (للمعدات Ready فقط)
     window.openRequestModal = function(code, name) {
       document.getElementById("req-eq-code").value = code;
       document.getElementById("req-eq-name").value = name;
@@ -1033,8 +1022,8 @@
     }
 
     function render() {
-      const nameFilterVal = document.getElementById("name-filter").value;
-      const codeFilterVal = document.getElementById("code-filter").value.toLowerCase();
+      const nameFilterVal = document.getElementById("name-filter").value.toLowerCase().trim();
+      const codeFilterVal = document.getElementById("code-filter").value.toLowerCase().trim();
       const projectFilterVal = document.getElementById("project-filter").value;
       const deptFilterVal = document.getElementById("dept-filter").value;
 
@@ -1047,7 +1036,7 @@
         }
       });
 
-      if (nameFilterVal !== "All") filtered = filtered.filter(i => i.name === nameFilterVal);
+      if (nameFilterVal) filtered = filtered.filter(i => (i.name || "").toLowerCase().includes(nameFilterVal));
       if (codeFilterVal) filtered = filtered.filter(i => (i.code || "").toLowerCase().includes(codeFilterVal) || (i.report || "").toLowerCase().includes(codeFilterVal));
       if (projectFilterVal !== "All") filtered = filtered.filter(i => i.project === projectFilterVal);
       if (deptFilterVal !== "All") filtered = filtered.filter(i => i.dept === deptFilterVal);
@@ -1060,7 +1049,6 @@
         if (currentRole === 'admin') {
           actionHtml = `<div class="action-btns"><button class="btn-edit" onclick="editEquipment('${item.id}')">Edit</button><button class="btn-delete" onclick="deleteEquipment('${item.id}')">Delete</button></div>`;
         } else {
-          // للمشاهدين: زر الطلب يظهر فقط لو كانت الحالة Ready
           if (item.status === 'Ready') {
             actionHtml = `<button class="btn-request" onclick="openRequestModal('${item.code}', '${item.name}')">Request</button>`;
           } else {
