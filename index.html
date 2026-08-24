@@ -808,6 +808,7 @@
 
     let equipmentList = [];
     let monthlyStats = [];
+    let hasLoadedRequests = false;
 
     const tableBody = document.getElementById("equipment-table-body");
     const monthlyTableBody = document.getElementById("monthly-table-body");
@@ -833,14 +834,30 @@
       console.error("Error fetching monthly stats: ", error);
     });
 
+    // Real-time listener for transfer requests to notify Admin
+    onSnapshot(collection(db, "transfer_requests"), (snapshot) => {
+      if (!hasLoadedRequests) {
+        hasLoadedRequests = true;
+        return; // Skip initial load trigger
+      }
+      snapshot.docChanges().forEach((change) => {
+        if (change.type === "added") {
+          const req = change.doc.data();
+          if (currentRole === 'admin') {
+            showNotification(`🚨 New Transfer Request!\nRequested by: ${req.userName}\nEquipment: ${req.eqName} (${req.eqCode})\nDestination: ${req.destProject}`);
+          }
+        }
+      });
+    });
+
     function showNotification(message) {
       const banner = document.getElementById("notification-banner");
       const textSpan = document.getElementById("notification-text");
-      textSpan.textContent = message;
+      textSpan.innerHTML = message.replace(/\n/g, '<br>');
       banner.style.display = "block";
       setTimeout(() => {
         banner.style.display = "none";
-      }, 6000);
+      }, 7000);
     }
 
     window.manualSaveData = function() {
@@ -1001,15 +1018,28 @@
     };
 
     const equipmentRequestForm = document.getElementById("equipment-request-form");
-    equipmentRequestForm.addEventListener("submit", (e) => {
+    equipmentRequestForm.addEventListener("submit", async (e) => {
       e.preventDefault();
       const userName = document.getElementById("req-user-name").value.trim();
       const destProject = document.getElementById("req-dest-project").value.trim();
       const eqCode = document.getElementById("req-eq-code").value;
       const eqName = document.getElementById("req-eq-name").value;
 
-      closeRequestModal();
-      showNotification(`✅ Transfer Request Sent Successfully!\nRequested by: ${userName}\nEquipment: ${eqName} (${eqCode})\nDestination: ${destProject}`);
+      try {
+        await addDoc(collection(db, "transfer_requests"), {
+          userName,
+          destProject,
+          eqCode,
+          eqName,
+          timestamp: new Date().toISOString()
+        });
+
+        closeRequestModal();
+        showNotification(`✅ Transfer Request Sent Successfully!\nRequested by: ${userName}\nEquipment: ${eqName} (${eqCode})\nDestination: ${destProject}`);
+      } catch (err) {
+        console.error("Error sending request:", err);
+        alert("Failed to send request. Please check connection.");
+      }
     });
 
     function calculateDuration(entryDate, exitDate, status) {
@@ -1259,8 +1289,7 @@
 
     window.logoutSystem = function() {
       setAccessMode("viewer");
-      document.getElementById("login-user").value = "";
-      document.getElementById("login-pass").value = "";
+      document.getElementById("login-user").value, document.getElementById("login-pass").value = "";
       document.getElementById("login-overlay").style.display = "flex";
     };
 
