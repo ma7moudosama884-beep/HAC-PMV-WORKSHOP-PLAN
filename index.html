@@ -150,7 +150,7 @@
     }
     .ticker-move {
       display: inline-block;
-      animation: tickerAnimation 380s linear infinite; /* بطيء جداً (ربع السرعة السابقة) */
+      animation: tickerAnimation 380s linear infinite;
       padding-left: 100%;
     }
     .ticker-move:hover {
@@ -452,7 +452,6 @@
     <div class="ticker-label">⚡ Live Workshop Updates</div>
     <div class="ticker-wrap">
       <div class="ticker-move" id="ticker-content">
-        <!-- Dynamic Ticker Items -->
         <span class="ticker-item">Loading latest workshop equipment status...</span>
       </div>
     </div>
@@ -618,7 +617,6 @@
             </tr>
           </thead>
           <tbody id="equipment-table-body">
-            <!-- Dynamic Content -->
           </tbody>
         </table>
       </div>
@@ -663,7 +661,6 @@
             </tr>
           </thead>
           <tbody id="monthly-table-body">
-            <!-- Dynamic Content -->
           </tbody>
         </table>
       </div>
@@ -712,7 +709,6 @@
             </tr>
           </thead>
           <tbody id="modalTableBody">
-            <!-- Dynamic Modal Rows -->
           </tbody>
         </table>
         <div id="emptyModalMsg" class="empty-modal-msg" style="display: none;">No equipment found in this status.</div>
@@ -771,7 +767,6 @@
     const adminPanel = document.getElementById("admin-form-panel");
     const mainGrid = document.getElementById("main-grid");
 
-    // Real-time listener for Firestore Equipment Collection
     onSnapshot(collection(db, "equipment"), (snapshot) => {
       equipmentList = snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
       updateDropdowns();
@@ -780,7 +775,6 @@
       console.error("Error fetching equipment: ", error);
     });
 
-    // Real-time listener for Firestore Monthly Stats Collection
     onSnapshot(collection(db, "monthly_stats"), (snapshot) => {
       monthlyStats = snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
       monthlyStats.sort((a, b) => (a.month || "").localeCompare(b.month || ""));
@@ -790,7 +784,6 @@
       console.error("Error fetching monthly stats: ", error);
     });
 
-    // Notification Trigger Function
     function showNotification(message) {
       const banner = document.getElementById("notification-banner");
       const textSpan = document.getElementById("notification-text");
@@ -972,9 +965,9 @@
       const projectFilterVal = document.getElementById("project-filter").value;
       const deptFilterVal = document.getElementById("dept-filter").value;
 
-      // Filter based on active vs archive view
+      // تعديل شرط الفلترة ليعتمد بشكل حصري على الحالة Dispatched للأرشيف، لتبقى معدات الـ Ready في جدولها النشط
       let filtered = equipmentList.filter(item => {
-        const isArchived = (item.status === 'Dispatched' || item.exitDate);
+        const isArchived = (item.status === 'Dispatched');
         if (currentView === 'active') {
           return !isArchived;
         } else {
@@ -982,13 +975,11 @@
         }
       });
 
-      // Apply dropdown filters
       if (nameFilterVal !== "All") filtered = filtered.filter(i => i.name === nameFilterVal);
       if (codeFilterVal) filtered = filtered.filter(i => (i.code || "").toLowerCase().includes(codeFilterVal) || (i.report || "").toLowerCase().includes(codeFilterVal));
       if (projectFilterVal !== "All") filtered = filtered.filter(i => i.project === projectFilterVal);
       if (deptFilterVal !== "All") filtered = filtered.filter(i => i.dept === deptFilterVal);
 
-      // Render Table Rows
       tableBody.innerHTML = filtered.map(item => {
         const icon = deptIcons[item.dept] || "";
         const duration = calculateDuration(item.entryDate, item.exitDate, item.status);
@@ -1030,14 +1021,13 @@
         `;
       }).join('');
 
-      // Update Top Summary Counters
-      const totalActive = equipmentList.filter(i => !(i.status === 'Dispatched' || i.exitDate)).length;
-      const readyCount = equipmentList.filter(i => i.status === 'Ready' && !(i.status === 'Dispatched' || i.exitDate)).length;
-      const progressCount = equipmentList.filter(i => i.status === 'In Progress' && !(i.status === 'Dispatched' || i.exitDate)).length;
-      const waitingCount = equipmentList.filter(i => i.status === 'Waiting' && !(i.status === 'Dispatched' || i.exitDate)).length;
-      const delayCount = equipmentList.filter(i => i.status === 'Delay' && !(i.status === 'Dispatched' || i.exitDate)).length;
-      const externalCount = equipmentList.filter(i => i.status === 'External' && !(i.status === 'Dispatched' || i.exitDate)).length;
-      const dispatchedCount = equipmentList.filter(i => (i.status === 'Dispatched' || i.exitDate)).length;
+      const totalActive = equipmentList.filter(i => i.status !== 'Dispatched').length;
+      const readyCount = equipmentList.filter(i => i.status === 'Ready').length;
+      const progressCount = equipmentList.filter(i => i.status === 'In Progress').length;
+      const waitingCount = equipmentList.filter(i => i.status === 'Waiting').length;
+      const delayCount = equipmentList.filter(i => i.status === 'Delay').length;
+      const externalCount = equipmentList.filter(i => i.status === 'External').length;
+      const dispatchedCount = equipmentList.filter(i => i.status === 'Dispatched').length;
 
       document.getElementById("total-count").textContent = totalActive;
       document.getElementById("ready-count").textContent = readyCount;
@@ -1063,7 +1053,6 @@
         </tr>
       `).join('');
 
-      // Calculate Cumulative Totals
       const totalEntered = monthlyStats.reduce((sum, s) => sum + Number(s.received || 0), 0);
       const totalExited = monthlyStats.reduce((sum, s) => sum + Number(s.dispatched || 0), 0);
       const totalReady = monthlyStats.reduce((sum, s) => sum + Number(s.repaired || 0), 0);
@@ -1088,7 +1077,6 @@
       tickerContent.innerHTML = tickerItemsHtml;
     }
 
-    // Modal Handling for Double Click on Stats
     window.openModal = function(statusFilter) {
       const modal = document.getElementById("statusModal");
       const modalTitle = document.getElementById("modalTitle");
@@ -1100,9 +1088,8 @@
       actionHeader.textContent = currentRole === 'admin' ? "Action" : "Request Equipment";
 
       let matched = equipmentList.filter(i => {
-        const isArchived = (i.status === 'Dispatched' || i.exitDate);
-        if (statusFilter === 'Dispatched') return isArchived;
-        if (isArchived) return false;
+        if (statusFilter === 'Dispatched') return i.status === 'Dispatched';
+        if (i.status === 'Dispatched') return false;
         if (statusFilter === 'All') return true;
         return i.status === statusFilter;
       });
@@ -1161,7 +1148,6 @@
       document.getElementById("statusModal").style.display = "none";
     };
 
-    // Role Switch & Login Handling
     window.handleRoleChange = function(selectElem) {
       const mode = selectElem.value;
       setAccessMode(mode);
@@ -1179,7 +1165,7 @@
       } else {
         adminPanel.style.display = "none";
         mainGrid.classList.add("full-width");
-        adminCols.forEach(el => el.style.display = "table-cell"); // Show request button column for viewers
+        adminCols.forEach(el => el.style.display = "table-cell");
       }
       render();
       renderMonthly();
