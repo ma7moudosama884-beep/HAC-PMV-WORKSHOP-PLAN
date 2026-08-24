@@ -4,88 +4,102 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>نظام طلبات نقل المعدات</title>
-    <!-- Tailwind CSS -->
+    <!-- Tailwind CSS للتصميم السريع والاحترافي -->
     <script src="https://cdn.tailwindcss.com"></script>
-    <!-- FontAwesome -->
+    <!-- مكتبة خطوط وأيقونات FontAwesome -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700&display=swap" rel="stylesheet">
     <style>
         body { font-family: 'Cairo', sans-serif; }
     </style>
 </head>
-<body class="bg-gray-100 min-h-screen pb-12">
+<body class="bg-gray-100 min-h-screen">
 
-    <!-- شريط التنقل العلوي -->
-    <header class="bg-slate-900 text-white shadow-md sticky top-0 z-40">
-        <div class="container mx-auto px-4 py-3.5 flex flex-col sm:flex-row justify-between items-center gap-3">
-            <h1 class="text-base sm:text-lg font-bold"><i class="fa-solid fa-truck-moving ml-2 text-blue-400"></i> نظام إدارة ونقل المعدات</h1>
-            <div class="flex gap-2 w-full sm:w-auto">
-                <button onclick="switchView('viewer')" id="btn-viewer" class="flex-1 sm:flex-none px-4 py-2 bg-blue-600 rounded-lg text-xs sm:text-sm font-semibold transition">واجهة الفاحص (Viewer)</button>
-                <button onclick="switchView('admin')" id="btn-admin" class="flex-1 sm:flex-none px-4 py-2 bg-slate-700 rounded-lg text-xs sm:text-sm font-semibold transition relative">
+    <!-- شريط التنقل العلوي للمحاكاة (التنقل بين دور Viewer و Admin) -->
+    <header class="bg-slate-900 text-white shadow-md">
+        <div class="container mx-auto px-4 py-3 flex justify-between items-center">
+            <h1 class="text-lg font-bold"><i class="fa-solid fa-truck-moving ml-2"></i> نظام إدارة ونقل المعدات</h1>
+            <div class="flex gap-2">
+                <button onclick="switchView('viewer')" id="btn-viewer" class="px-4 py-2 bg-blue-600 rounded-lg text-sm font-semibold transition">واجهة الفاحص (Viewer)</button>
+                <button onclick="switchView('admin')" id="btn-admin" class="px-4 py-2 bg-slate-700 rounded-lg text-sm font-semibold transition relative">
                     واجهة الأدمن (Admin)
-                    <span id="badge-count" class="absolute -top-1 -right-1 bg-red-500 text-xs w-5 h-5 rounded-full flex items-center justify-center hidden font-bold">0</span>
+                    <span id="badge-count" class="absolute -top-1 -right-1 bg-red-500 text-xs w-5 h-5 rounded-full flex items-center justify-center hidden">0</span>
                 </button>
             </div>
         </div>
     </header>
 
-    <main class="container mx-auto px-4 py-6 max-w-5xl">
+    <main class="container mx-auto px-4 py-6">
 
         <!-- ================= قسم الفاحص (Viewer) ================= -->
-        <section id="view-viewer" class="max-w-xl mx-auto bg-white p-6 sm:p-8 rounded-2xl shadow-sm border border-gray-200">
-            <h2 class="text-lg sm:text-xl font-bold text-slate-800 mb-6 border-b pb-3 flex items-center gap-2">
-                <i class="fa-solid fa-file-circle-plus text-blue-600"></i> طلب نقل معدة جديدة
-            </h2>
+        <section id="view-viewer" class="max-w-xl mx-auto bg-white p-6 rounded-2xl shadow-md">
+            <h2 class="text-xl font-bold text-slate-800 mb-4 border-b pb-2"><i class="fa-solid fa-file-circle-plus text-blue-600 ml-2"></i> طلب نقل معدة جديدة</h2>
             
             <form id="transferForm" onsubmit="submitTransferRequest(event)" class="space-y-4">
                 <div>
-                    <label class="block text-xs sm:text-sm font-semibold text-gray-700 mb-1">اسم مقدم الطلب (Viewer)</label>
-                    <input type="text" id="viewerName" required class="w-full px-4 py-2.5 text-sm border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500" placeholder="أدخل اسمك الكريم">
+                    <label class="block text-sm font-semibold text-gray-700 mb-1">اسم مقدم الطلب (Viewer)</label>
+                    <input type="text" id="viewerName" required class="w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500" placeholder="أدخل اسمك الكريم">
                 </div>
 
                 <div>
-                    <label class="block text-xs sm:text-sm font-semibold text-gray-700 mb-1">اسم المعدة / الكود التعريفي</label>
-                    <input type="text" id="equipmentName" required class="w-full px-4 py-2.5 text-sm border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500" placeholder="مثال: حفار كاتربيلر (EQ-104)">
+                    <label class="block text-sm font-semibold text-gray-700 mb-1">اسم المعدة / الكود التعريفي</label>
+                    <input type="text" id="equipmentName" required class="w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500" placeholder="مثال: حفار كاتربيلر (EQ-104)">
                 </div>
 
-                <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                <div class="grid grid-cols-2 gap-4">
                     <div>
-                        <label class="block text-xs sm:text-sm font-semibold text-gray-700 mb-1">المشروع الحالي</label>
-                        <input type="text" id="currentProject" required class="w-full px-4 py-2.5 text-sm border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500" placeholder="اسم المشروع الحالي">
+                        <label class="block text-sm font-semibold text-gray-700 mb-1">المشروع الحالي</label>
+                        <input type="text" id="currentProject" required class="w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500" placeholder="مشروع العاصمة الإدارية">
                     </div>
                     <div>
-                        <label class="block text-xs sm:text-sm font-semibold text-gray-700 mb-1">المشروع المطلوب نقله إليه</label>
-                        <input type="text" id="targetProject" required class="w-full px-4 py-2.5 text-sm border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500" placeholder="المشروع المطلوب">
+                        <label class="block text-sm font-semibold text-gray-700 mb-1">المشروع المطلوب نقله إليه</label>
+                        <input type="text" id="targetProject" required class="w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500" placeholder="مشروع العلمين">
                     </div>
                 </div>
 
-                <button type="submit" class="w-full bg-blue-600 hover:bg-blue-700 text-white font-bold py-3 rounded-lg transition duration-200 text-sm sm:text-base shadow-md mt-2">
+                <button type="submit" class="w-full bg-blue-600 hover:bg-blue-700 text-white font-bold py-3 rounded-lg transition duration-200">
                     <i class="fa-solid fa-paper-plane ml-2"></i> إرسال الطلب للسيرفر
                 </button>
             </form>
         </section>
 
         <!-- ================= قسم الأدمن (Admin) ================= -->
-        <section id="view-admin" class="hidden bg-white p-6 sm:p-8 rounded-2xl shadow-sm border border-gray-200">
-            <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center mb-6 border-b pb-3 gap-3">
-                <h2 class="text-lg sm:text-xl font-bold text-slate-800 flex items-center gap-2">
-                    <i class="fa-solid fa-list-check text-blue-600"></i> لوحة متابعة طلبات النقل الواردة
-                </h2>
-                <span id="live-indicator" class="text-xs bg-emerald-100 text-emerald-700 font-semibold px-3 py-1 rounded-full flex items-center gap-1.5">
+        <section id="view-admin" class="hidden max-w-5xl mx-auto bg-white p-6 rounded-2xl shadow-md">
+            <div class="flex justify-between items-center mb-6 border-b pb-3">
+                <h2 class="text-xl font-bold text-slate-800"><i class="fa-solid fa-list-check text-blue-600 ml-2"></i> لوحة متابعة طلبات النقل الواردة</h2>
+                <span id="live-indicator" class="text-xs bg-emerald-100 text-emerald-700 font-semibold px-3 py-1 rounded-full flex items-center gap-1">
                     <span class="w-2 h-2 rounded-full bg-emerald-500 animate-pulse"></span> متصل (Live Sync)
                 </span>
             </div>
 
-            <!-- حاوية الطلبات (تتكيّف تلقائياً كجدول في الكمبيوتر وكروت في الموبايل) -->
-            <div id="requestsContainer" class="space-y-3">
-                <div class="text-center py-12 text-gray-400 text-sm">لا توجد طلبات نقل جديدة حتى الآن</div>
+            <!-- جدول الطلبات -->
+            <div class="overflow-x-auto">
+                <table class="w-full text-right border-collapse">
+                    <thead>
+                        <tr class="bg-slate-100 text-slate-700 text-sm">
+                            <th class="p-3 rounded-r-lg">المعدة</th>
+                            <th class="p-3">مقدم الطلب</th>
+                            <th class="p-3">من مشروع</th>
+                            <th class="p-3">إلى مشروع</th>
+                            <th class="p-3">الوقت</th>
+                            <th class="p-3">الحالة</th>
+                            <th class="p-3 rounded-l-lg text-center">الإجراء</th>
+                        </tr>
+                    </thead>
+                    <tbody id="requestsTableBody" class="text-sm divide-y divide-gray-100">
+                        <!-- يتم حقن البيانات هنا برمجياً -->
+                        <tr>
+                            <td colspan="7" class="text-center py-6 text-gray-400">لا توجد طلبات جديدة حتى الآن</td>
+                        </tr>
+                    </tbody>
+                </table>
             </div>
         </section>
 
     </main>
 
     <!-- إشعار عائم فوري (Live Notification Toast) -->
-    <div id="toastNotification" class="fixed bottom-5 left-5 right-5 sm:right-auto sm:w-80 bg-slate-900 text-white px-5 py-4 rounded-xl shadow-2xl transform translate-y-32 opacity-0 transition-all duration-300 flex items-center gap-3 z-50 border-r-4 border-blue-500">
+    <div id="toastNotification" class="fixed bottom-5 left-5 bg-slate-900 text-white px-5 py-4 rounded-xl shadow-2xl transform -translate-y-20 opacity-0 transition-all duration-300 flex items-center gap-3 z-50 border-r-4 border-blue-500">
         <i class="fa-solid fa-bell text-blue-400 text-xl animate-bounce"></i>
         <div>
             <h4 class="font-bold text-sm" id="toastTitle">طلب نقل جديد!</h4>
@@ -93,10 +107,12 @@
         </div>
     </div>
 
-    <!-- كود الجافاسكريبت -->
+    <!-- كود الجافاسكريبت الخاص بإدارة الحركات والتزامن الفوري -->
     <script>
+        // تخزين مؤقت للطلبات (محاكاة قاعدة البيانات السحابية مثل Firebase أو WebSockets)
         let requests = JSON.parse(localStorage.getItem('equipment_requests')) || [];
 
+        // تبديل الواجهات للمحاكاة
         function switchView(role) {
             const viewerSec = document.getElementById('view-viewer');
             const adminSec = document.getElementById('view-admin');
@@ -106,20 +122,22 @@
             if (role === 'viewer') {
                 viewerSec.classList.remove('hidden');
                 adminSec.classList.add('hidden');
-                btnViewer.className = "flex-1 sm:flex-none px-4 py-2 bg-blue-600 rounded-lg text-xs sm:text-sm font-semibold transition";
-                btnAdmin.className = "flex-1 sm:flex-none px-4 py-2 bg-slate-700 rounded-lg text-xs sm:text-sm font-semibold transition";
+                btnViewer.className = "px-4 py-2 bg-blue-600 rounded-lg text-sm font-semibold transition";
+                btnAdmin.className = "px-4 py-2 bg-slate-700 rounded-lg text-sm font-semibold transition";
             } else {
                 viewerSec.classList.add('hidden');
                 adminSec.classList.remove('hidden');
-                btnAdmin.className = "flex-1 sm:flex-none px-4 py-2 bg-blue-600 rounded-lg text-xs sm:text-sm font-semibold transition";
-                btnViewer.className = "flex-1 sm:flex-none px-4 py-2 bg-slate-700 rounded-lg text-xs sm:text-sm font-semibold transition";
+                btnAdmin.className = "px-4 py-2 bg-blue-600 rounded-lg text-sm font-semibold transition";
+                btnViewer.className = "px-4 py-2 bg-slate-700 rounded-lg text-sm font-semibold transition";
                 
+                // إخفاء الـ Badge عند فتح صفحة الأدمن
                 document.getElementById('badge-count').classList.add('hidden');
                 document.getElementById('badge-count').innerText = '0';
-                renderAdminList();
+                renderAdminTable();
             }
         }
 
+        // إرسال الطلب وحفظه في السيرفر (محاكاة)
         function submitTransferRequest(event) {
             event.preventDefault();
 
@@ -133,72 +151,79 @@
                 status: 'معلق'
             };
 
+            // حفظ البيانات (في النظام الحقيقي هنا يتم استخدام fetch() لإرسالها للـ API)
             requests.unshift(newReq);
             localStorage.setItem('equipment_requests', JSON.stringify(requests));
 
+            // تفعيل محاكاة الإشعار الفوري للأدمن Live Notification
             triggerLiveNotification(newReq);
+
+            // إعادة تعيين النموذج
             document.getElementById('transferForm').reset();
-            alert('تم إرسال الطلب وحفظه في النظام بنجاح!');
+            alert('تم إرسال الطلب بنجاح إلى النظام!');
         }
 
+        // محاكاة وصول إشعار فوري (Live Notification) عبر السيرفر
         function triggerLiveNotification(req) {
+            // تحديث الـ Badge للأدمن
             const badge = document.getElementById('badge-count');
             let currentCount = parseInt(badge.innerText) || 0;
             badge.innerText = currentCount + 1;
             badge.classList.remove('hidden');
 
+            // إظهار التنبيه البصري (Toast)
             const toast = document.getElementById('toastNotification');
-            document.getElementById('toastTitle').innerText = `معدة: ${req.equipmentName}`;
+            document.getElementById('toastTitle').innerText = `طلب نقل معدة: ${req.equipmentName}`;
             document.getElementById('toastDesc').innerText = `من ${req.viewerName} إلى ${req.targetProject}`;
             
-            toast.classList.remove('translate-y-32', 'opacity-0');
+            toast.classList.remove('-translate-y-20', 'opacity-0');
             setTimeout(() => {
-                toast.classList.add('translate-y-32', 'opacity-0');
-            }, 4500);
+                toast.classList.add('-translate-y-20', 'opacity-0');
+            }, 4000);
 
+            // إذا كان الأدمن فاتح لوحة التحكم حالياً، يتم تحديث الجدول تلقائياً
             if (!document.getElementById('view-admin').classList.contains('hidden')) {
-                renderAdminList();
+                renderAdminTable();
             }
         }
 
-        function renderAdminList() {
-            const container = document.getElementById('requestsContainer');
+        // عرض جدول الأدمن
+        function renderAdminTable() {
+            const tbody = document.getElementById('requestsTableBody');
             if (requests.length === 0) {
-                container.innerHTML = `<div class="text-center py-12 text-gray-400 text-sm">لا توجد طلبات نقل جديدة حتى الآن</div>`;
+                tbody.innerHTML = `<tr><td colspan="7" class="text-center py-6 text-gray-400">لا توجد طلبات جديدة حتى الآن</td></tr>`;
                 return;
             }
 
-            container.innerHTML = requests.map(req => `
-                <div class="bg-gray-50 border border-gray-200 rounded-xl p-4 sm:p-5 shadow-sm flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 transition hover:bg-white hover:shadow">
-                    <div class="space-y-1.5 w-full sm:w-auto">
-                        <div class="flex items-center gap-2">
-                            <span class="font-bold text-slate-800 text-base"><i class="fa-solid fa-gears text-blue-600 ml-1"></i> ${req.equipmentName}</span>
-                            <span class="px-2.5 py-0.5 bg-amber-100 text-amber-700 rounded-full text-xs font-bold">${req.status}</span>
-                        </div>
-                        <div class="text-xs sm:text-sm text-gray-600 flex flex-wrap gap-x-4 gap-y-1">
-                            <span><strong class="text-gray-400">مقدم الطلب:</strong> ${req.viewerName}</span>
-                            <span><strong class="text-gray-400">المسار:</strong> ${req.currentProject} ➔ <span class="text-blue-600 font-semibold">${req.targetProject}</span></span>
-                            <span class="text-gray-400">(${req.time})</span>
-                        </div>
-                    </div>
-
-                    <div class="flex items-center gap-2 w-full sm:w-auto justify-end border-t sm:border-t-0 pt-3 sm:pt-0">
-                        <button onclick="updateStatus(${req.id}, 'موافق')" class="flex-1 sm:flex-none px-4 py-2 bg-emerald-600 hover:bg-emerald-700 text-white rounded-lg text-xs font-semibold shadow-sm transition">موافقة</button>
-                        <button onclick="updateStatus(${req.id}, 'مرفوض')" class="flex-1 sm:flex-none px-4 py-2 bg-rose-600 hover:bg-rose-700 text-white rounded-lg text-xs font-semibold shadow-sm transition">رفض</button>
-                    </div>
-                </div>
+            tbody.innerHTML = requests.map(req => `
+                <tr class="hover:bg-gray-50 transition">
+                    <td class="p-3 font-bold text-slate-800">${req.equipmentName}</td>
+                    <td class="p-3 text-gray-600">${req.viewerName}</td>
+                    <td class="p-3 text-gray-600">${req.currentProject}</td>
+                    <td class="p-3 text-blue-600 font-semibold">${req.targetProject}</td>
+                    <td class="p-3 text-gray-400 text-xs">${req.time}</td>
+                    <td class="p-3">
+                        <span class="px-2.5 py-1 bg-amber-100 text-amber-700 rounded-full text-xs font-bold">${req.status}</span>
+                    </td>
+                    <td class="p-3 text-center flex justify-center gap-2">
+                        <button onclick="updateStatus(${req.id}, 'موافق')" class="px-3 py-1 bg-emerald-600 hover:bg-emerald-700 text-white rounded-lg text-xs">موافقة</button>
+                        <button onclick="updateStatus(${req.id}, 'مرفوض')" class="px-3 py-1 bg-rose-600 hover:bg-rose-700 text-white rounded-lg text-xs">رفض</button>
+                    </td>
+                </tr>
             `).join('');
         }
 
+        // تحديث حالة الطلب
         function updateStatus(id, newStatus) {
             requests = requests.map(r => r.id === id ? { ...r, status: newStatus } : r);
             localStorage.setItem('equipment_requests', JSON.stringify(requests));
-            renderAdminList();
+            renderAdminTable();
         }
 
+        // تحميل الجدول عند فتح الصفحة أول مرة
         window.onload = function() {
             if (requests.length > 0 && !document.getElementById('view-admin').classList.contains('hidden')) {
-                renderAdminList();
+                renderAdminTable();
             }
         };
     </script>
