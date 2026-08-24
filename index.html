@@ -115,6 +115,60 @@
     }
     .btn-save-global:hover { background: #27ae60; }
 
+    /* Live News Ticker Bar */
+    .news-ticker-container {
+      background: #001a2e;
+      color: #ffffff;
+      display: flex;
+      align-items: center;
+      border-bottom: 2px solid var(--status-ready);
+      overflow: hidden;
+      height: 38px;
+      font-size: 13px;
+      box-shadow: inset 0 2px 5px rgba(0,0,0,0.3);
+    }
+    .ticker-label {
+      background: var(--navy);
+      color: var(--status-ready);
+      padding: 0 15px;
+      height: 100%;
+      display: flex;
+      align-items: center;
+      font-weight: bold;
+      font-size: 12px;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+      border-right: 2px solid rgba(255,255,255,0.1);
+      white-space: nowrap;
+      z-index: 2;
+    }
+    .ticker-wrap {
+      overflow: hidden;
+      white-space: nowrap;
+      flex: 1;
+      position: relative;
+    }
+    .ticker-move {
+      display: inline-block;
+      animation: tickerAnimation 380s linear infinite; /* بطيء جداً (ربع السرعة السابقة) */
+      padding-left: 100%;
+    }
+    .ticker-move:hover {
+      animation-play-state: paused;
+    }
+    .ticker-item {
+      display: inline-block;
+      margin-right: 40px;
+      font-weight: 500;
+    }
+    .ticker-item span.ready-highlight { color: var(--status-ready); font-weight: bold; }
+    .ticker-item span.dispatch-highlight { color: #e74c3c; font-weight: bold; }
+
+    @keyframes tickerAnimation {
+      0% { transform: translate3d(0, 0, 0); }
+      100% { transform: translate3d(-100%, 0, 0); }
+    }
+
     /* Dashboard Layout */
     .container { padding: 25px; max-width: 1400px; margin: 0 auto; flex: 1; width: 100%; }
     
@@ -351,7 +405,7 @@
 
   <!-- Floating Notification Banner -->
   <div id="notification-banner">
-    🔔 <span id="notification-text">طلب تحويل معدة جاهزة جديد!</span>
+    🔔 <span id="notification-text">Action completed successfully!</span>
   </div>
 
   <!-- Login Screen -->
@@ -392,6 +446,17 @@
       </div>
     </div>
   </header>
+
+  <!-- Live News Ticker Bar -->
+  <div class="news-ticker-container">
+    <div class="ticker-label">⚡ Live Workshop Updates</div>
+    <div class="ticker-wrap">
+      <div class="ticker-move" id="ticker-content">
+        <!-- Dynamic Ticker Items -->
+        <span class="ticker-item">Loading latest workshop equipment status...</span>
+      </div>
+    </div>
+  </div>
 
   <div class="container">
     
@@ -744,186 +809,111 @@
       currentView = viewType;
       const activeBtn = document.getElementById("tab-active-btn");
       const archiveBtn = document.getElementById("tab-archive-btn");
-      const title = document.getElementById("table-main-title");
+      const mainTitle = document.getElementById("table-main-title");
 
-      if (viewType === "active") {
+      if (viewType === 'active') {
         activeBtn.classList.add("active");
         archiveBtn.classList.remove("active");
-        title.textContent = "Active Equipment Inventory";
+        mainTitle.textContent = "Active Equipment Inventory";
       } else {
         archiveBtn.classList.add("active");
         activeBtn.classList.remove("active");
-        title.textContent = "Dispatched & Exited Equipment Archive";
+        mainTitle.textContent = "Dispatched / Archive List";
       }
       render();
-    }
-
-    function calculateDuration(entry, exit) {
-      if (!entry) return "N/A";
-      const start = new Date(entry);
-      const end = exit ? new Date(exit) : new Date();
-      const diffTime = end - start;
-      const diffDays = Math.floor(diffTime / (1000 * 60 * 60 * 24));
-      return diffDays >= 0 ? `${diffDays} Days` : "0 Days";
-    }
+    };
 
     function updateDropdowns() {
-      const projectFilterSelect = document.getElementById("project-filter");
-      if(projectFilterSelect) {
-        const currentSelectedProj = projectFilterSelect.value;
-        const projectsSet = new Set();
-        equipmentList.forEach(item => {
-          if (item.project) projectsSet.add(item.project.trim());
-          if (item.exitProject) projectsSet.add(item.exitProject.trim());
-        });
-        const projects = [...projectsSet].sort();
-        
-        projectFilterSelect.innerHTML = `<option value="All">All Projects</option>`;
-        projects.forEach(proj => {
-          const opt = document.createElement("option");
-          opt.value = proj;
-          opt.textContent = proj;
-          projectFilterSelect.appendChild(opt);
-        });
+      const nameFilter = document.getElementById("name-filter");
+      const projectFilter = document.getElementById("project-filter");
+      
+      const currentSelectedName = nameFilter.value;
+      const currentSelectedProject = projectFilter.value;
 
-        if (projects.includes(currentSelectedProj)) {
-          projectFilterSelect.value = currentSelectedProj;
-        }
-      }
+      const uniqueNames = [...new Set(equipmentList.map(item => item.name))].sort();
+      const uniqueProjects = [...new Set(equipmentList.map(item => item.project))].sort();
 
-      const nameFilterSelect = document.getElementById("name-filter");
-      if(nameFilterSelect) {
-        const currentSelectedName = nameFilterSelect.value;
-        const namesSet = new Set();
-        equipmentList.forEach(item => {
-          if (item.name) namesSet.add(item.name.trim());
-        });
-        const names = [...namesSet].sort();
+      nameFilter.innerHTML = '<option value="All">All Types</option>' + 
+        uniqueNames.map(n => `<option value="${n}">${n}</option>`).join('');
+      nameFilter.value = uniqueNames.includes(currentSelectedName) ? currentSelectedName : "All";
 
-        nameFilterSelect.innerHTML = `<option value="All">All Types</option>`;
-        names.forEach(name => {
-          const opt = document.createElement("option");
-          opt.value = name;
-          opt.textContent = name;
-          nameFilterSelect.appendChild(opt);
-        });
-
-        if (names.includes(currentSelectedName)) {
-          nameFilterSelect.value = currentSelectedName;
-        }
-      }
+      projectFilter.innerHTML = '<option value="All">All Projects</option>' + 
+        uniqueProjects.map(p => `<option value="${p}">${p}</option>`).join('');
+      projectFilter.value = uniqueProjects.includes(currentSelectedProject) ? currentSelectedProject : "All";
     }
 
-    document.getElementById("login-form").addEventListener("submit", function(e) {
+    form.addEventListener("submit", async (e) => {
       e.preventDefault();
-      const user = document.getElementById("login-user").value.trim().toLowerCase();
-      const pass = document.getElementById("login-pass").value;
-      const errorMsg = document.getElementById("login-error");
+      if (currentRole !== "admin") {
+        alert("Access Denied: Only Admin can add or modify equipment.");
+        return;
+      }
 
-      if (USERS[user] && USERS[user].pass === pass) {
-        document.getElementById("login-overlay").style.display = "none";
-        const roleSelect = document.getElementById("role-select");
-        roleSelect.value = USERS[user].role;
-        handleRoleChange(roleSelect);
-      } else {
-        errorMsg.style.display = "block";
+      const id = document.getElementById("edit-eq-id").value;
+      const name = document.getElementById("eq-name").value.trim();
+      const code = document.getElementById("eq-code").value.trim();
+      const project = document.getElementById("eq-project").value.trim();
+      const entryDate = document.getElementById("eq-entry-date").value;
+      const exitDate = document.getElementById("eq-exit-date").value;
+      const exitProject = document.getElementById("eq-exit-project").value.trim();
+      const report = document.getElementById("eq-report").value.trim();
+      const dept = document.getElementById("eq-dept").value;
+      const status = document.getElementById("eq-status").value;
+
+      const equipmentData = { name, code, project, entryDate, exitDate, exitProject, report, dept, status };
+
+      try {
+        if (id) {
+          await updateDoc(doc(db, "equipment", id), equipmentData);
+          showNotification(`Equipment data updated successfully for: ${code}`);
+        } else {
+          await addDoc(collection(db, "equipment"), equipmentData);
+          showNotification(`New equipment added successfully: ${code}`);
+        }
+        form.reset();
+        cancelEdit();
+      } catch (err) {
+        console.error("Error saving equipment:", err);
+        alert("Failed to save data. Please check connection.");
       }
     });
 
-    window.handleRoleChange = function(select) {
-      currentRole = select.value;
-      const adminActionCols = document.querySelectorAll(".admin-action-col");
-      if (currentRole === "viewer") {
-        adminPanel.style.display = "none";
-        mainGrid.classList.add("full-width");
-        adminActionCols.forEach(col => col.style.display = "none");
-      } else {
-        adminPanel.style.display = "block";
-        mainGrid.classList.remove("full-width");
-        adminActionCols.forEach(col => col.style.display = "table-cell");
-      }
-      render();
-    }
-
-    // Function for team member to request transferring a Ready equipment
-    window.requestTransfer = async function(id) {
-      const item = equipmentList.find(eq => eq.id === id);
-      if (!item) return;
-
-      const destProject = prompt(`طلب تحويل المعدة الجاهزة: (${item.name} - ${item.code})\nأدخل اسم المشروع الجديد المراد التحويل إليه:`);
-      if (!destProject || destProject.trim() === "") return;
-
-      // Show notification on admin screen
-      showNotification(`طلب تحويل جديد للمعدة (${item.name} - ${item.code}) إلى مشروع: "${destProject.trim()}"`);
-    }
-
-    // Add / Edit Equipment Form Submission
-    form.addEventListener("submit", async function(e) {
+    monthlyForm.addEventListener("submit", async (e) => {
       e.preventDefault();
-      if (currentRole === "viewer") return;
+      if (currentRole !== "admin") {
+        alert("Access Denied: Only Admin can log monthly stats.");
+        return;
+      }
 
-      const editId = document.getElementById("edit-eq-id").value;
-      const eqData = {
-        name: document.getElementById("eq-name").value.trim(),
-        code: document.getElementById("eq-code").value.trim(),
-        project: document.getElementById("eq-project").value.trim(),
-        entryDate: document.getElementById("eq-entry-date").value,
-        exitDate: document.getElementById("eq-exit-date").value || "",
-        exitProject: document.getElementById("eq-exit-project").value.trim() || "",
-        report: document.getElementById("eq-report").value.trim(),
-        dept: document.getElementById("eq-dept").value,
-        status: document.getElementById("eq-status").value
-      };
+      const month = document.getElementById("m-month").value;
+      const received = Number(document.getElementById("m-received").value);
+      const repaired = Number(document.getElementById("m-repaired").value);
+      const dispatched = Number(document.getElementById("m-dispatched").value);
 
       try {
-        if (editId) {
-          await updateDoc(doc(db, "equipment", editId), eqData);
-          cancelEdit();
-        } else {
-          await addDoc(collection(db, "equipment"), eqData);
-          form.reset();
-        }
-      } catch (error) {
-        console.error("Error saving equipment: ", error);
-        alert("Error saving data to cloud.");
-      }
-    });
-
-    // Log Monthly Statistics Form
-    monthlyForm.addEventListener("submit", async function(e) {
-      e.preventDefault();
-      if (currentRole === "viewer") return;
-
-      const mMonth = document.getElementById("m-month").value;
-      const mReceived = parseInt(document.getElementById("m-received").value) || 0;
-      const mRepaired = parseInt(document.getElementById("m-repaired").value) || 0;
-      const mDispatched = parseInt(document.getElementById("m-dispatched").value) || 0;
-
-      try {
-        const existing = monthlyStats.find(item => item.month === mMonth);
-        if (existing) {
-          await updateDoc(doc(db, "monthly_stats", existing.id), {
-            received: mReceived,
-            repaired: mRepaired,
-            dispatched: mDispatched
-          });
-        } else {
-          await addDoc(collection(db, "monthly_stats"), {
-            month: mMonth,
-            received: mReceived,
-            repaired: mRepaired,
-            dispatched: mDispatched
-          });
-        }
+        await addDoc(collection(db, "monthly_stats"), { month, received, repaired, dispatched });
         monthlyForm.reset();
-      } catch (error) {
-        console.error("Error saving monthly stats: ", error);
-        alert("Error saving monthly stats.");
+        showNotification(`Monthly stats logged successfully for ${month}!`);
+      } catch (err) {
+        console.error("Error saving monthly stats:", err);
+        alert("Failed to save monthly stats.");
       }
     });
+
+    window.deleteMonthly = async function(id) {
+      if (currentRole !== "admin") return;
+      if (confirm("Are you sure you want to delete this monthly log?")) {
+        try {
+          await deleteDoc(doc(db, "monthly_stats", id));
+          showNotification("Monthly log deleted successfully.");
+        } catch (err) {
+          console.error("Error deleting monthly log:", err);
+        }
+      }
+    };
 
     window.editEquipment = function(id) {
-      const item = equipmentList.find(eq => eq.id === id);
+      const item = equipmentList.find(e => e.id === id);
       if (!item) return;
 
       document.getElementById("edit-eq-id").value = item.id;
@@ -938,10 +928,10 @@
       document.getElementById("eq-status").value = item.status || "Ready";
 
       document.getElementById("form-panel-title").textContent = "Edit Equipment";
-      document.getElementById("form-submit-btn").textContent = "Update Equipment";
+      document.getElementById("form-submit-btn").textContent = "💾 Save Changes";
       document.getElementById("cancel-edit-btn").style.display = "block";
-      window.scrollTo({ top: 0, behavior: 'smooth' });
-    }
+      adminPanel.scrollIntoView({ behavior: 'smooth' });
+    };
 
     window.cancelEdit = function() {
       form.reset();
@@ -949,53 +939,107 @@
       document.getElementById("form-panel-title").textContent = "Add New Equipment";
       document.getElementById("form-submit-btn").textContent = "+ Add Equipment";
       document.getElementById("cancel-edit-btn").style.display = "none";
-    }
+    };
 
     window.deleteEquipment = async function(id) {
-      if (confirm("Are you sure you want to delete this equipment item?")) {
+      if (currentRole !== "admin") return;
+      if (confirm("Are you sure you want to delete this equipment?")) {
         try {
           await deleteDoc(doc(db, "equipment", id));
-        } catch (error) {
-          console.error("Error deleting equipment: ", error);
+          showNotification("Equipment removed from records.");
+        } catch (err) {
+          console.error("Error deleting equipment:", err);
         }
       }
+    };
+
+    window.requestEquipment = function(code, name) {
+      showNotification(`Transfer request submitted successfully for (${name} - ${code})!`);
+    };
+
+    function calculateDuration(entryDate, exitDate, status) {
+      if (!entryDate) return "N/A";
+      const start = new Date(entryDate);
+      const end = (status === 'Dispatched' && exitDate) ? new Date(exitDate) : new Date();
+      const diffTime = Math.abs(end - start);
+      const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
+      return `${diffDays} Days`;
     }
 
-    window.deleteMonthlyStat = async function(id) {
-      if (confirm("Are you sure you want to delete this monthly record?")) {
-        try {
-          await deleteDoc(doc(db, "monthly_stats", id));
-        } catch (error) {
-          console.error("Error deleting monthly stat: ", error);
+    function render() {
+      const nameFilterVal = document.getElementById("name-filter").value;
+      const codeFilterVal = document.getElementById("code-filter").value.toLowerCase();
+      const projectFilterVal = document.getElementById("project-filter").value;
+      const deptFilterVal = document.getElementById("dept-filter").value;
+
+      // Filter based on active vs archive view
+      let filtered = equipmentList.filter(item => {
+        const isArchived = (item.status === 'Dispatched' || item.exitDate);
+        if (currentView === 'active') {
+          return !isArchived;
+        } else {
+          return isArchived;
         }
-      }
-    }
-
-    window.render = function() {
-      const nameFilter = document.getElementById("name-filter").value;
-      const codeFilter = document.getElementById("code-filter").value.trim().toLowerCase();
-      const projectFilter = document.getElementById("project-filter").value;
-      const deptFilter = document.getElementById("dept-filter").value;
-
-      let totalCount = equipmentList.length;
-      let readyCount = 0;
-      let progressCount = 0;
-      let waitingCount = 0;
-      let delayCount = 0;
-      let externalCount = 0;
-      let dispatchedCount = 0;
-
-      equipmentList.forEach(item => {
-        const s = item.status;
-        if (s === "Ready") readyCount++;
-        else if (s === "In Progress") progressCount++;
-        else if (s === "Waiting") waitingCount++;
-        else if (s === "Delay") delayCount++;
-        else if (s === "External") externalCount++;
-        else if (s === "Dispatched") dispatchedCount++;
       });
 
-      document.getElementById("total-count").textContent = totalCount;
+      // Apply dropdown filters
+      if (nameFilterVal !== "All") filtered = filtered.filter(i => i.name === nameFilterVal);
+      if (codeFilterVal) filtered = filtered.filter(i => (i.code || "").toLowerCase().includes(codeFilterVal) || (i.report || "").toLowerCase().includes(codeFilterVal));
+      if (projectFilterVal !== "All") filtered = filtered.filter(i => i.project === projectFilterVal);
+      if (deptFilterVal !== "All") filtered = filtered.filter(i => i.dept === deptFilterVal);
+
+      // Render Table Rows
+      tableBody.innerHTML = filtered.map(item => {
+        const icon = deptIcons[item.dept] || "";
+        const duration = calculateDuration(item.entryDate, item.exitDate, item.status);
+        const actionHtml = currentRole === 'admin' 
+          ? `<div class="action-btns"><button class="btn-edit" onclick="editEquipment('${item.id}')">Edit</button><button class="btn-delete" onclick="deleteEquipment('${item.id}')">Delete</button></div>`
+          : `<button class="btn-request" onclick="requestEquipment('${item.code}', '${item.name}')">Request</button>`;
+
+        return `
+          <tr>
+            <td><strong>${item.name}</strong></td>
+            <td>
+              <div class="code-cell-container">
+                <span><strong>${item.code}</strong></span>
+                <span class="eq-report-text">${item.report || 'No report specified'}</span>
+              </div>
+            </td>
+            <td>
+              <div class="project-cell-container">
+                <span class="project-tag">📥 ${item.project}</span>
+                ${item.exitProject ? `<span class="exit-project-tag">📤 ${item.exitProject}</span>` : ''}
+              </div>
+            </td>
+            <td>
+              <div style="font-size: 11px;">
+                <div>In: ${item.entryDate || 'N/A'}</div>
+                <div>Out: ${item.exitDate || 'Active'}</div>
+              </div>
+            </td>
+            <td><span class="duration-badge">${duration}</span></td>
+            <td>
+              <div class="dept-cell">
+                <img src="${icon}" class="dept-icon-img" alt="${item.dept}">
+                <span>${item.dept}</span>
+              </div>
+            </td>
+            <td><span class="status-badge status-${item.status.replace(/\s+/g, '-')}">${item.status}</span></td>
+            <td class="admin-action-col">${actionHtml}</td>
+          </tr>
+        `;
+      }).join('');
+
+      // Update Top Summary Counters
+      const totalActive = equipmentList.filter(i => !(i.status === 'Dispatched' || i.exitDate)).length;
+      const readyCount = equipmentList.filter(i => i.status === 'Ready' && !(i.status === 'Dispatched' || i.exitDate)).length;
+      const progressCount = equipmentList.filter(i => i.status === 'In Progress' && !(i.status === 'Dispatched' || i.exitDate)).length;
+      const waitingCount = equipmentList.filter(i => i.status === 'Waiting' && !(i.status === 'Dispatched' || i.exitDate)).length;
+      const delayCount = equipmentList.filter(i => i.status === 'Delay' && !(i.status === 'Dispatched' || i.exitDate)).length;
+      const externalCount = equipmentList.filter(i => i.status === 'External' && !(i.status === 'Dispatched' || i.exitDate)).length;
+      const dispatchedCount = equipmentList.filter(i => (i.status === 'Dispatched' || i.exitDate)).length;
+
+      document.getElementById("total-count").textContent = totalActive;
       document.getElementById("ready-count").textContent = readyCount;
       document.getElementById("progress-count").textContent = progressCount;
       document.getElementById("waiting-count").textContent = waitingCount;
@@ -1003,200 +1047,165 @@
       document.getElementById("external-count").textContent = externalCount;
       document.getElementById("dispatched-count").textContent = dispatchedCount;
 
-      const filtered = equipmentList.filter(item => {
-        const isDispatched = (item.status === "Dispatched" || (item.exitDate && item.exitDate.trim() !== ""));
-        if (currentView === "active" && isDispatched) return false;
-        if (currentView === "archive" && !isDispatched) return false;
+      updateTicker();
+    }
 
-        if (nameFilter !== "All" && item.name !== nameFilter) return false;
-        if (codeFilter && !item.code.toLowerCase().includes(codeFilter) && !item.name.toLowerCase().includes(codeFilter)) return false;
-        if (projectFilter !== "All" && item.project !== projectFilter && item.exitProject !== projectFilter) return false;
-        if (deptFilter !== "All" && item.dept !== deptFilter) return false;
+    function renderMonthly() {
+      monthlyTableBody.innerHTML = monthlyStats.map(stat => `
+        <tr>
+          <td><strong>${stat.month}</strong></td>
+          <td>${stat.received}</td>
+          <td>${stat.repaired}</td>
+          <td>${stat.dispatched}</td>
+          <td class="admin-action-col">
+            <button class="btn-delete" onclick="deleteMonthly('${stat.id}')">Delete</button>
+          </td>
+        </tr>
+      `).join('');
 
-        return true;
-      });
+      // Calculate Cumulative Totals
+      const totalEntered = monthlyStats.reduce((sum, s) => sum + Number(s.received || 0), 0);
+      const totalExited = monthlyStats.reduce((sum, s) => sum + Number(s.dispatched || 0), 0);
+      const totalReady = monthlyStats.reduce((sum, s) => sum + Number(s.repaired || 0), 0);
 
-      tableBody.innerHTML = "";
-      if (filtered.length === 0) {
-        tableBody.innerHTML = `<tr><td colspan="8" style="text-align: center; color: var(--text-muted); padding: 25px; font-style: italic;">No equipment records found matching the criteria.</td></tr>`;
+      document.getElementById("annual-entered-count").textContent = totalEntered;
+      document.getElementById("annual-exited-count").textContent = totalExited;
+      document.getElementById("annual-ready-count").textContent = totalReady;
+    }
+
+    function updateTicker() {
+      const tickerContent = document.getElementById("ticker-content");
+      if (equipmentList.length === 0) {
+        tickerContent.innerHTML = '<span class="ticker-item">No equipment currently registered in the central workshop.</span>';
         return;
       }
 
-      filtered.forEach(item => {
-        const tr = document.createElement("tr");
-        const iconUrl = deptIcons[item.dept] || "";
-        const duration = calculateDuration(item.entryDate, item.exitDate);
+      const tickerItemsHtml = equipmentList.map(item => {
+        const highlightClass = item.status === 'Ready' ? 'ready-highlight' : (item.status === 'Delay' ? 'dispatch-highlight' : '');
+        return `<span class="ticker-item">Equipment: <strong>${item.name}</strong> (${item.code}) - Project: ${item.project} - Status: <span class="${highlightClass}">${item.status}</span> (${item.dept})</span>`;
+      }).join(' &nbsp;&nbsp;|&nbsp;&nbsp; ');
 
-        let actionHtml = "";
-        if (currentRole === "admin") {
-          actionHtml = `
-            <div class="action-btns">
-              <button class="btn-edit" onclick="editEquipment('${item.id}')">Edit</button>
-              <button class="btn-delete" onclick="deleteEquipment('${item.id}')">Delete</button>
-            </div>
-          `;
-        } else {
-          actionHtml = `<span style="font-size: 11px; color: var(--text-muted); font-style: italic;">View Only</span>`;
-        }
-
-        tr.innerHTML = `
-          <td><strong>${item.name || ""}</strong></td>
-          <td>
-            <div class="code-cell-container">
-              <span style="font-weight: bold; color: var(--navy);">${item.code || ""}</span>
-              ${item.report ? `<span class="eq-report-text">${item.report}</span>` : ""}
-            </div>
-          </td>
-          <td>
-            <div class="project-cell-container">
-              <span class="project-tag">In: ${item.project || "N/A"}</span>
-              ${item.exitProject ? `<span class="exit-project-tag">Out: ${item.exitProject}</span>` : ""}
-            </div>
-          </td>
-          <td>
-            <div style="font-size: 11px;">
-              <div>Entry: <strong>${item.entryDate || "N/A"}</strong></div>
-              ${item.exitDate ? `<div>Exit: <strong style="color: #c0392b;">${item.exitDate}</strong></div>` : ""}
-            </div>
-          </td>
-          <td><span class="duration-badge">${duration}</span></td>
-          <td>
-            <div class="dept-cell">
-              ${iconUrl ? `<img src="${iconUrl}" class="dept-icon-img" alt="${item.dept}">` : ""}
-              <span>${item.dept || ""}</span>
-            </div>
-          </td>
-          <td><span class="status-badge status-${item.status ? item.status.replace(/\s+/g, '-') : 'Ready'}">${item.status || "Ready"}</span></td>
-          <td class="admin-action-col">${actionHtml}</td>
-        `;
-        tableBody.appendChild(tr);
-      });
+      tickerContent.innerHTML = tickerItemsHtml;
     }
 
-    window.renderMonthly = function() {
-      monthlyTableBody.innerHTML = "";
-      let sumReceived = 0;
-      let sumDispatched = 0;
-      let sumRepaired = 0;
-
-      if (monthlyStats.length === 0) {
-        monthlyTableBody.innerHTML = `<tr><td colspan="${currentRole === 'viewer' ? 4 : 5}" style="text-align: center; color: var(--text-muted); padding: 20px; font-style: italic;">No monthly performance logs found.</td></tr>`;
-      } else {
-        monthlyStats.forEach(stat => {
-          sumReceived += parseInt(stat.received) || 0;
-          sumDispatched += parseInt(stat.dispatched) || 0;
-          sumRepaired += parseInt(stat.repaired) || 0;
-
-          const tr = document.createElement("tr");
-          tr.innerHTML = `
-            <td><strong>${stat.month || ""}</strong></td>
-            <td>${stat.received || 0}</td>
-            <td>${stat.repaired || 0}</td>
-            <td>${stat.dispatched || 0}</td>
-            <td class="admin-action-col" ${currentRole === 'viewer' ? 'style="display:none;"' : ''}>
-              <button class="btn-delete" onclick="deleteMonthlyStat('${stat.id}')">Delete</button>
-            </td>
-          `;
-          monthlyTableBody.appendChild(tr);
-        });
-      }
-
-      document.getElementById("annual-entered-count").textContent = sumReceived;
-      document.getElementById("annual-exited-count").textContent = sumDispatched;
-      document.getElementById("annual-ready-count").textContent = sumRepaired;
-    }
-
-    // Modal popup triggered on double clicking summary cards
-    window.openModal = function(statusCategory) {
+    // Modal Handling for Double Click on Stats
+    window.openModal = function(statusFilter) {
       const modal = document.getElementById("statusModal");
       const modalTitle = document.getElementById("modalTitle");
       const modalTableBody = document.getElementById("modalTableBody");
-      const emptyModalMsg = document.getElementById("emptyModalMsg");
-      const modalActionHeader = document.getElementById("modal-action-header");
+      const emptyMsg = document.getElementById("emptyModalMsg");
+      const actionHeader = document.getElementById("modal-action-header");
 
-      modalTitle.textContent = statusCategory === "All" ? "All Equipment List" : `${statusCategory} Equipment List`;
-      modalTableBody.innerHTML = "";
+      modalTitle.textContent = statusFilter === 'All' ? "All Active Equipment Inventory" : `Equipment List: ${statusFilter}`;
+      actionHeader.textContent = currentRole === 'admin' ? "Action" : "Request Equipment";
 
-      // Show/Hide or adjust the action column header inside modal based on role and status
-      if (currentRole === "viewer" && statusCategory === "Ready") {
-        modalActionHeader.style.display = "table-cell";
-        modalActionHeader.textContent = "Request Transfer";
-      } else if (currentRole === "admin") {
-        modalActionHeader.style.display = "table-cell";
-        modalActionHeader.textContent = "Action";
-      } else {
-        modalActionHeader.style.display = "none";
-      }
-
-      const matched = equipmentList.filter(item => {
-        if (statusCategory === "All") return true;
-        return item.status === statusCategory;
+      let matched = equipmentList.filter(i => {
+        const isArchived = (i.status === 'Dispatched' || i.exitDate);
+        if (statusFilter === 'Dispatched') return isArchived;
+        if (isArchived) return false;
+        if (statusFilter === 'All') return true;
+        return i.status === statusFilter;
       });
 
       if (matched.length === 0) {
-        emptyModalMsg.style.display = "block";
+        modalTableBody.innerHTML = "";
+        emptyMsg.style.display = "block";
       } else {
-        emptyModalMsg.style.display = "none";
-        matched.forEach(item => {
-          const tr = document.createElement("tr");
-          const duration = calculateDuration(item.entryDate, item.exitDate);
+        emptyMsg.style.display = "none";
+        modalTableBody.innerHTML = matched.map(item => {
+          const icon = deptIcons[item.dept] || "";
+          const duration = calculateDuration(item.entryDate, item.exitDate, item.status);
+          const actionBtn = currentRole === 'admin'
+            ? `<button class="btn-edit" onclick="closeModal(); editEquipment('${item.id}')">Edit</button>`
+            : `<button class="btn-request" onclick="requestEquipment('${item.code}', '${item.name}')">Request</button>`;
 
-          let modalActionHtml = "";
-          if (currentRole === "viewer" && item.status === "Ready") {
-            modalActionHtml = `<td><button class="btn-request" onclick="requestTransfer('${item.id}')">Request Transfer</button></td>`;
-          } else if (currentRole === "admin") {
-            modalActionHtml = `
+          return `
+            <tr>
               <td>
-                <div class="action-btns">
-                  <button class="btn-edit" onclick="editEquipment('${item.id}'); closeModal();">Edit</button>
-                  <button class="btn-delete" onclick="deleteEquipment('${item.id}')">Delete</button>
+                <div class="code-cell-container">
+                  <span><strong>${item.code}</strong></span>
+                  <span class="eq-report-text">${item.report || ''}</span>
                 </div>
               </td>
-            `;
-          } else {
-            modalActionHtml = `<td style="display:none;"></td>`;
-          }
-
-          tr.innerHTML = `
-            <td>
-              <div class="code-cell-container">
-                <span style="font-weight: bold; color: var(--navy);">${item.code || ""}</span>
-                ${item.report ? `<span class="eq-report-text">${item.report}</span>` : ""}
-              </div>
-            </td>
-            <td><strong>${item.name || ""}</strong></td>
-            <td>
-              <div class="project-cell-container">
-                <span class="project-tag">In: ${item.project || "N/A"}</span>
-                ${item.exitProject ? `<span class="exit-project-tag">Out: ${item.exitProject}</span>` : ""}
-              </div>
-            </td>
-            <td>
-              <div style="font-size: 11px;">
-                <div>Entry: <strong>${item.entryDate || "N/A"}</strong></div>
-                ${item.exitDate ? `<div>Exit: <strong style="color: #c0392b;">${item.exitDate}</strong></div>` : ""}
-              </div>
-            </td>
-            <td><span class="duration-badge">${duration}</span></td>
-            <td>${item.dept || ""}</td>
-            <td><span class="status-badge status-${item.status ? item.status.replace(/\s+/g, '-') : 'Ready'}">${item.status || "Ready"}</span></td>
-            ${modalActionHtml}
+              <td><strong>${item.name}</strong></td>
+              <td>
+                <div class="project-cell-container">
+                  <span class="project-tag">📥 ${item.project}</span>
+                  ${item.exitProject ? `<span class="exit-project-tag">📤 ${item.exitProject}</span>` : ''}
+                </div>
+              </td>
+              <td>
+                <div style="font-size: 11px;">
+                  <div>In: ${item.entryDate || 'N/A'}</div>
+                  <div>Out: ${item.exitDate || 'Active'}</div>
+                </div>
+              </td>
+              <td><span class="duration-badge">${duration}</span></td>
+              <td>
+                <div class="dept-cell">
+                  <img src="${icon}" class="dept-icon-img" alt="${item.dept}">
+                  <span>${item.dept}</span>
+                </div>
+              </td>
+              <td><span class="status-badge status-${item.status.replace(/\s+/g, '-')}">${item.status}</span></td>
+              <td>${actionBtn}</td>
+            </tr>
           `;
-          modalTableBody.appendChild(tr);
-        });
+        }).join('');
       }
 
       modal.style.display = "flex";
-    }
+    };
 
     window.closeModal = function() {
       document.getElementById("statusModal").style.display = "none";
+    };
+
+    // Role Switch & Login Handling
+    window.handleRoleChange = function(selectElem) {
+      const mode = selectElem.value;
+      setAccessMode(mode);
+    };
+
+    function setAccessMode(mode) {
+      currentRole = mode;
+      document.getElementById("role-select").value = mode;
+      const adminCols = document.querySelectorAll(".admin-action-col");
+      
+      if (mode === 'admin') {
+        adminPanel.style.display = "block";
+        mainGrid.classList.remove("full-width");
+        adminCols.forEach(el => el.style.display = "table-cell");
+      } else {
+        adminPanel.style.display = "none";
+        mainGrid.classList.add("full-width");
+        adminCols.forEach(el => el.style.display = "table-cell"); // Show request button column for viewers
+      }
+      render();
+      renderMonthly();
     }
+
+    const loginForm = document.getElementById("login-form");
+    loginForm.addEventListener("submit", (e) => {
+      e.preventDefault();
+      const usernameInput = document.getElementById("login-user").value.trim().toLowerCase();
+      const passwordInput = document.getElementById("login-pass").value.trim();
+      const errorMsg = document.getElementById("login-error");
+
+      if (USERS[usernameInput] && USERS[usernameInput].pass === passwordInput) {
+        const role = USERS[usernameInput].role;
+        document.getElementById("login-overlay").style.display = "none";
+        setAccessMode(role);
+        showNotification(`Welcome back, Eng. Mahmoud! Logged in successfully.`);
+      } else {
+        errorMsg.style.display = "block";
+      }
+    });
 
     window.onclick = function(event) {
       const modal = document.getElementById("statusModal");
       if (event.target === modal) {
-        modal.style.display = "none";
+        closeModal();
       }
     }
   </script>
