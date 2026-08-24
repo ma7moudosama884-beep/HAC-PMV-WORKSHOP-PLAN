@@ -56,14 +56,13 @@
       display: flex; justify-content: center; align-items: center;
       z-index: 9999;
       flex-direction: column;
-      padding: 15px;
     }
     .login-card {
       background: #ffffff;
       padding: 35px 30px;
       border-radius: 12px;
       box-shadow: 0 10px 25px rgba(0,0,0,0.3);
-      width: 100%; max-width: 380px;
+      width: 90%; max-width: 380px;
       text-align: center;
     }
     .login-card img { height: 50px; margin-bottom: 15px; }
@@ -86,19 +85,17 @@
     header {
       background: #ffffff;
       border-bottom: 3px solid var(--navy);
-      padding: 12px 20px;
+      padding: 12px 30px;
       display: flex;
       justify-content: space-between;
       align-items: center;
       box-shadow: 0 2px 5px rgba(0,0,0,0.05);
-      flex-wrap: wrap;
-      gap: 15px;
     }
     .logo-container { display: flex; align-items: center; gap: 15px; }
-    .logo-container img { height: 40px; object-fit: contain; }
-    .logo-container h1 { font-size: 18px; color: var(--navy); border-left: 2px solid #ccc; padding-left: 15px; font-weight: bold; }
+    .logo-container img { height: 45px; object-fit: contain; }
+    .logo-container h1 { font-size: 20px; color: var(--navy); border-left: 2px solid #ccc; padding-left: 15px; font-weight: bold; }
     
-    .header-controls { display: flex; align-items: center; gap: 10px; flex-wrap: wrap; }
+    .header-controls { display: flex; align-items: center; gap: 15px; }
     .role-switch { font-size: 13px; font-weight: bold; color: var(--navy); display: flex; align-items: center; gap: 8px; }
     .role-switch select { padding: 5px 10px; border-radius: 4px; border: 1px solid var(--border-color); font-weight: bold; }
     
@@ -106,10 +103,10 @@
       background: var(--status-ready);
       color: #fff;
       border: none;
-      padding: 7px 12px;
+      padding: 7px 15px;
       border-radius: 4px;
       font-weight: bold;
-      font-size: 12px;
+      font-size: 13px;
       cursor: pointer;
       display: flex;
       align-items: center;
@@ -165,7 +162,7 @@
     }
     .ticker-move {
       display: inline-block;
-      animation: tickerAnimation 250s linear infinite;
+      animation: tickerAnimation 380s linear infinite;
       padding-left: 100%;
     }
     .ticker-move:hover {
@@ -185,13 +182,13 @@
     }
 
     /* Dashboard Layout */
-    .container { padding: 15px; max-width: 1400px; margin: 0 auto; flex: 1; width: 100%; }
+    .container { padding: 25px; max-width: 1400px; margin: 0 auto; flex: 1; width: 100%; }
     
     /* Summary Cards */
-    .summary-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(120px, 1fr)); gap: 12px; margin-bottom: 20px; }
+    .summary-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(140px, 1fr)); gap: 15px; margin-bottom: 25px; }
     .stat-card { 
       background: var(--card-bg); 
-      padding: 12px; 
+      padding: 15px; 
       border-radius: 8px; 
       border: 1px solid var(--border-color); 
       text-align: center; 
@@ -203,51 +200,50 @@
       transform: translateY(-2px); 
       box-shadow: 0 4px 10px rgba(0,0,0,0.08); 
     }
-    .stat-card h3 { font-size: 10px; color: var(--text-muted); margin-bottom: 4px; text-transform: uppercase; }
-    .stat-card p { font-size: 20px; font-weight: bold; }
-    .stat-hint { font-size: 8px; color: #888; margin-top: 4px; font-style: italic; }
+    .stat-card h3 { font-size: 11px; color: var(--text-muted); margin-bottom: 6px; text-transform: uppercase; }
+    .stat-card p { font-size: 22px; font-weight: bold; }
+    .stat-hint { font-size: 9px; color: #888; margin-top: 4px; font-style: italic; }
 
     /* Annual Totals Banner */
     .annual-banner {
       background: linear-gradient(135deg, var(--navy), #004070);
       color: #ffffff;
-      padding: 18px 20px;
+      padding: 18px 25px;
       border-radius: 8px;
       margin-top: 25px;
       margin-bottom: 25px;
       box-shadow: 0 4px 12px rgba(0,0,0,0.1);
     }
-    .annual-banner h2 { font-size: 14px; margin-bottom: 12px; border-bottom: 1px solid rgba(255,255,255,0.2); padding-bottom: 6px; display: flex; align-items: center; gap: 8px; }
+    .annual-banner h2 { font-size: 15px; margin-bottom: 12px; border-bottom: 1px solid rgba(255,255,255,0.2); padding-bottom: 6px; display: flex; align-items: center; gap: 8px; }
     .annual-stats-grid {
       display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
-      gap: 12px;
+      grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+      gap: 15px;
     }
     .annual-item {
       background: rgba(255, 255, 255, 0.08);
-      padding: 10px 12px;
+      padding: 12px 15px;
       border-radius: 6px;
       border-left: 4px solid var(--status-ready);
     }
     .annual-item.exited { border-left-color: var(--status-progress); }
     .annual-item.ready-done { border-left-color: #f1c40f; }
-    .annual-item span { display: block; font-size: 10px; opacity: 0.85; margin-bottom: 4px; text-transform: uppercase; }
-    .annual-item strong { font-size: 18px; }
+    .annual-item span { display: block; font-size: 11px; opacity: 0.85; margin-bottom: 4px; text-transform: uppercase; }
+    .annual-item strong { font-size: 20px; }
 
     /* Tabs Navigation */
     .view-tabs {
       display: flex;
-      gap: 8px;
+      gap: 10px;
       margin-bottom: 15px;
-      flex-wrap: wrap;
     }
     .tab-btn {
-      padding: 7px 14px;
+      padding: 8px 18px;
       background: #e0e6ed;
       border: none;
       border-radius: 6px;
       font-weight: bold;
-      font-size: 12px;
+      font-size: 13px;
       color: var(--navy);
       cursor: pointer;
       transition: all 0.2s;
@@ -258,66 +254,23 @@
     }
 
     /* Content Layout */
-    .content-grid { display: grid; grid-template-columns: 320px 1fr; gap: 20px; transition: all 0.3s ease; margin-bottom: 25px; align-items: start; }
+    .content-grid { display: grid; grid-template-columns: 320px 1fr; gap: 25px; transition: all 0.3s ease; margin-bottom: 25px; align-items: start; }
     .content-grid.full-width { grid-template-columns: 1fr; }
 
-    @media (max-width: 900px) {
-      .content-grid { grid-template-columns: 1fr; }
-    }
-
-    /* Left Sidebar: Forms & Requests Panel */
-    .left-sidebar { display: flex; flex-direction: column; gap: 20px; }
-
     /* Form Section */
-    .form-panel { background: var(--card-bg); padding: 18px; border-radius: 8px; border: 1px solid var(--border-color); }
-    .form-panel h2 { font-size: 15px; color: var(--navy); margin-bottom: 12px; border-bottom: 2px solid var(--navy); padding-bottom: 6px; }
-    .form-group { margin-bottom: 10px; }
-    .form-group label { display: block; font-size: 11px; font-weight: bold; margin-bottom: 4px; color: var(--text-muted); }
-    .form-group input, .form-group select, .form-group textarea { width: 100%; padding: 8px; border: 1px solid var(--border-color); border-radius: 4px; font-size: 12px; }
-    .form-group textarea { resize: vertical; height: 45px; }
-    .btn-add { width: 100%; background: var(--navy); color: #fff; border: none; padding: 9px; border-radius: 4px; font-weight: bold; cursor: pointer; margin-top: 8px; font-size: 13px; }
+    .form-panel { background: var(--card-bg); padding: 20px; border-radius: 8px; border: 1px solid var(--border-color); height: fit-content; }
+    .form-panel h2 { font-size: 16px; color: var(--navy); margin-bottom: 15px; border-bottom: 2px solid var(--navy); padding-bottom: 8px; }
+    .form-group { margin-bottom: 12px; }
+    .form-group label { display: block; font-size: 12px; font-weight: bold; margin-bottom: 5px; color: var(--text-muted); }
+    .form-group input, .form-group select, .form-group textarea { width: 100%; padding: 8px 10px; border: 1px solid var(--border-color); border-radius: 4px; font-size: 13px; }
+    .form-group textarea { resize: vertical; height: 50px; }
+    .btn-add { width: 100%; background: var(--navy); color: #fff; border: none; padding: 10px; border-radius: 4px; font-weight: bold; cursor: pointer; margin-top: 10px; }
     .btn-add:hover { background: #001a2e; }
-    .btn-cancel-edit { width: 100%; background: #7f8c8d; color: #fff; border: none; padding: 7px; border-radius: 4px; font-weight: bold; cursor: pointer; margin-top: 5px; display: none; font-size: 12px; }
+    .btn-cancel-edit { width: 100%; background: #7f8c8d; color: #fff; border: none; padding: 8px; border-radius: 4px; font-weight: bold; cursor: pointer; margin-top: 5px; display: none; }
     .btn-cancel-edit:hover { background: #606f7b; }
 
-    /* Transfer Notifications Panel (Under Add Equipment) */
-    .admin-requests-panel {
-      background: var(--card-bg);
-      padding: 15px;
-      border-radius: 8px;
-      border: 1px solid var(--border-color);
-      border-left: 4px solid var(--status-waiting);
-    }
-    .admin-requests-panel h3 {
-      font-size: 14px;
-      color: var(--navy);
-      margin-bottom: 10px;
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-    }
-    .req-badge-count {
-      background: var(--status-delay);
-      color: white;
-      font-size: 10px;
-      padding: 2px 6px;
-      border-radius: 10px;
-    }
-    .req-item-card {
-      background: #fafbfc;
-      border: 1px solid #e1e4e8;
-      padding: 10px;
-      border-radius: 6px;
-      margin-bottom: 8px;
-      font-size: 12px;
-    }
-    .req-item-card p { margin-bottom: 4px; }
-    .req-actions { display: flex; gap: 6px; margin-top: 8px; }
-    .btn-req-approve { background: var(--status-ready); color: white; border: none; padding: 4px 10px; border-radius: 4px; font-size: 11px; font-weight: bold; cursor: pointer; flex: 1; }
-    .btn-req-reject { background: var(--status-delay); color: white; border: none; padding: 4px 10px; border-radius: 4px; font-size: 11px; font-weight: bold; cursor: pointer; flex: 1; }
-
     /* Equipment Table Panel */
-    .table-panel { background: var(--card-bg); padding: 18px; border-radius: 8px; border: 1px solid var(--border-color); overflow-x: auto; }
+    .table-panel { background: var(--card-bg); padding: 20px; border-radius: 8px; border: 1px solid var(--border-color); overflow-x: auto; }
     .table-panel-header {
       display: flex;
       justify-content: space-between;
@@ -326,47 +279,47 @@
       flex-wrap: wrap;
       gap: 10px;
     }
-    .table-panel h2 { font-size: 15px; color: var(--navy); margin: 0; }
+    .table-panel h2 { font-size: 16px; color: var(--navy); margin: 0; }
     
     .filters-wrapper {
       display: flex;
       align-items: center;
-      gap: 10px;
+      gap: 12px;
       flex-wrap: wrap;
     }
     .filter-container {
       display: flex;
       align-items: center;
-      gap: 5px;
-      font-size: 11px;
+      gap: 6px;
+      font-size: 12px;
       font-weight: bold;
       color: var(--navy);
     }
     .filter-container select, .filter-container input {
-      padding: 5px;
+      padding: 5px 8px;
       border: 1px solid var(--border-color);
       border-radius: 4px;
-      font-size: 11px;
+      font-size: 12px;
       font-weight: bold;
     }
-    .filter-container input { font-weight: normal; width: 110px; }
+    .filter-container input { font-weight: normal; width: 120px; }
 
-    table { width: 100%; border-collapse: collapse; font-size: 12px; min-width: 700px; }
-    th, td { padding: 9px; text-align: left; border-bottom: 1px solid var(--border-color); vertical-align: middle; }
+    table { width: 100%; border-collapse: collapse; font-size: 13px; }
+    th, td { padding: 10px; text-align: left; border-bottom: 1px solid var(--border-color); vertical-align: middle; }
     th { background-color: #f8f9fa; color: var(--navy); }
     
-    .code-cell-container { display: flex; flex-direction: column; gap: 2px; }
-    .eq-report-text { font-size: 10px; color: var(--text-muted); font-style: italic; font-weight: normal; }
+    .code-cell-container { display: flex; flex-direction: column; gap: 3px; }
+    .eq-report-text { font-size: 11px; color: var(--text-muted); font-style: italic; font-weight: normal; }
     .project-cell-container { display: flex; flex-direction: column; gap: 2px; }
-    .project-tag { font-size: 10px; color: #004070; font-weight: bold; background: #e8f1f5; padding: 2px 5px; border-radius: 4px; width: fit-content; }
-    .exit-project-tag { font-size: 10px; color: #c0392b; font-weight: bold; background: #fdeaea; padding: 2px 5px; border-radius: 4px; width: fit-content; }
+    .project-tag { font-size: 11px; color: #004070; font-weight: bold; background: #e8f1f5; padding: 2px 6px; border-radius: 4px; width: fit-content; }
+    .exit-project-tag { font-size: 11px; color: #c0392b; font-weight: bold; background: #fdeaea; padding: 2px 6px; border-radius: 4px; width: fit-content; }
 
-    .dept-cell { display: flex; align-items: center; gap: 6px; font-weight: 500; }
-    .dept-icon-img { width: 20px; height: 20px; object-fit: contain; }
-    .duration-badge { background: #eef2f5; padding: 2px 6px; border-radius: 4px; font-weight: bold; color: var(--navy); font-size: 11px; display: inline-block; }
+    .dept-cell { display: flex; align-items: center; gap: 8px; font-weight: 500; }
+    .dept-icon-img { width: 22px; height: 22px; object-fit: contain; }
+    .duration-badge { background: #eef2f5; padding: 3px 8px; border-radius: 4px; font-weight: bold; color: var(--navy); font-size: 12px; display: inline-block; }
 
     /* Status Badges */
-    .status-badge { padding: 3px 6px; border-radius: 10px; font-size: 9px; font-weight: bold; text-transform: uppercase; display: inline-block; }
+    .status-badge { padding: 4px 8px; border-radius: 12px; font-size: 10px; font-weight: bold; text-transform: uppercase; display: inline-block; }
     .status-Ready { background-color: #e8f8f0; color: var(--status-ready); }
     .status-Delay { background-color: #fdeaea; color: var(--status-delay); }
     .status-In-Progress { background-color: #ebf5fb; color: var(--status-progress); }
@@ -374,12 +327,12 @@
     .status-Waiting { background-color: #fef9e7; color: var(--status-waiting); }
     .status-Dispatched { background-color: #f0f3f4; color: var(--status-dispatched); }
 
-    .action-btns { display: flex; gap: 4px; align-items: center; }
-    .btn-edit { background: var(--status-progress); color: white; border: none; padding: 5px 8px; border-radius: 4px; cursor: pointer; font-size: 11px; }
+    .action-btns { display: flex; gap: 5px; align-items: center; }
+    .btn-edit { background: var(--status-progress); color: white; border: none; padding: 6px 10px; border-radius: 4px; cursor: pointer; font-size: 12px; }
     .btn-edit:hover { background: #2980b9; }
-    .btn-delete { background: var(--status-delay); color: white; border: none; padding: 5px 8px; border-radius: 4px; cursor: pointer; font-size: 11px; }
+    .btn-delete { background: var(--status-delay); color: white; border: none; padding: 6px 10px; border-radius: 4px; cursor: pointer; font-size: 12px; }
     .btn-delete:hover { background: #c0392b; }
-    .btn-request { background: var(--status-ready); color: white; border: none; padding: 5px 8px; border-radius: 4px; cursor: pointer; font-size: 11px; font-weight: bold; }
+    .btn-request { background: var(--status-ready); color: white; border: none; padding: 6px 10px; border-radius: 4px; cursor: pointer; font-size: 12px; font-weight: bold; }
     .btn-request:hover { background: #27ae60; }
 
     /* Modal Styles */
@@ -392,12 +345,11 @@
       justify-content: center;
       align-items: center;
       z-index: 1000;
-      padding: 15px;
     }
     .modal-card {
       background: #ffffff;
-      width: 100%;
-      max-width: 900px;
+      width: 90%;
+      max-width: 1000px;
       border-radius: 10px;
       box-shadow: 0 10px 25px rgba(0,0,0,0.2);
       overflow: hidden;
@@ -410,12 +362,12 @@
     .modal-header {
       background: var(--navy);
       color: #ffffff;
-      padding: 12px 18px;
+      padding: 15px 20px;
       display: flex;
       justify-content: space-between;
       align-items: center;
     }
-    .modal-header h3 { font-size: 15px; font-weight: bold; }
+    .modal-header h3 { font-size: 16px; font-weight: bold; }
     .modal-close {
       background: transparent;
       border: none;
@@ -425,17 +377,17 @@
       line-height: 1;
     }
     .modal-body {
-      padding: 15px;
+      padding: 20px;
       max-height: 60vh;
       overflow-y: auto;
     }
     .modal-table {
       width: 100%;
       border-collapse: collapse;
-      font-size: 12px;
+      font-size: 13px;
     }
     .modal-table th, .modal-table td {
-      padding: 8px;
+      padding: 10px;
       border-bottom: 1px solid var(--border-color);
     }
     .modal-table th {
@@ -455,9 +407,9 @@
       background: var(--navy);
       color: #ffffff;
       text-align: center;
-      padding: 12px;
-      font-size: 12px;
-      margin-top: 25px;
+      padding: 15px;
+      font-size: 13px;
+      margin-top: 30px;
     }
   </style>
 </head>
@@ -509,7 +461,7 @@
   <div class="modal-overlay" id="requestModal">
     <div class="login-card" style="margin: auto;">
       <h2 style="color: var(--navy); margin-bottom: 12px; font-size: 16px;">Request Equipment Transfer</h2>
-      <p id="req-eq-info" style="font-size: 11px; color: var(--text-muted); margin-bottom: 12px; font-weight: bold;"></p>
+      <p id="req-eq-info" style="font-size: 12px; color: var(--text-muted); margin-bottom: 15px; font-weight: bold;"></p>
       <form id="equipment-request-form">
         <input type="hidden" id="req-eq-code">
         <input type="hidden" id="req-eq-name">
@@ -548,7 +500,7 @@
 
   <!-- Live News Ticker Bar -->
   <div class="news-ticker-container">
-    <div class="ticker-label">⚡ Live Updates</div>
+    <div class="ticker-label">⚡ Live Workshop Updates</div>
     <div class="ticker-wrap">
       <div class="ticker-move" id="ticker-content">
         <span class="ticker-item">Loading latest workshop equipment status...</span>
@@ -561,148 +513,134 @@
     <!-- Summary Cards -->
     <div class="summary-grid">
       <div class="stat-card" ondblclick="openModal('All')">
-        <h3>Total</h3>
+        <h3>Total Equipment</h3>
         <p id="total-count" style="color: var(--navy);">0</p>
-        <div class="stat-hint">Double click</div>
+        <div class="stat-hint">Double click to view</div>
       </div>
       <div class="stat-card" ondblclick="openModal('Ready')">
         <h3>Ready</h3>
         <p id="ready-count" style="color: var(--status-ready);">0</p>
-        <div class="stat-hint">Double click</div>
+        <div class="stat-hint">Double click to view</div>
       </div>
       <div class="stat-card" ondblclick="openModal('In Progress')">
         <h3>In Progress</h3>
         <p id="progress-count" style="color: var(--status-progress);">0</p>
-        <div class="stat-hint">Double click</div>
+        <div class="stat-hint">Double click to view</div>
       </div>
       <div class="stat-card" ondblclick="openModal('Waiting')">
         <h3>Waiting</h3>
         <p id="waiting-count" style="color: var(--status-waiting);">0</p>
-        <div class="stat-hint">Double click</div>
+        <div class="stat-hint">Double click to view</div>
       </div>
       <div class="stat-card" ondblclick="openModal('Delay')">
         <h3>Delay</h3>
         <p id="delay-count" style="color: var(--status-delay);">0</p>
-        <div class="stat-hint">Double click</div>
+        <div class="stat-hint">Double click to view</div>
       </div>
       <div class="stat-card" ondblclick="openModal('External')">
         <h3>External</h3>
         <p id="external-count" style="color: var(--status-external);">0</p>
-        <div class="stat-hint">Double click</div>
+        <div class="stat-hint">Double click to view</div>
       </div>
       <div class="stat-card" ondblclick="openModal('Dispatched')">
-        <h3>Dispatched</h3>
+        <h3>Dispatched / Exited</h3>
         <p id="dispatched-count" style="color: var(--status-dispatched);">0</p>
-        <div class="stat-hint">Double click</div>
+        <div class="stat-hint">Double click to view</div>
       </div>
     </div>
 
     <!-- Section 1: Form & Equipment Inventory Table -->
     <div class="content-grid" id="main-grid">
       
-      <!-- Left Sidebar: Form & Incoming Transfer Requests Panel -->
-      <div class="left-sidebar" id="admin-sidebar-panel">
-        <!-- Form: Add / Edit Equipment -->
-        <div class="form-panel">
-          <h2 id="form-panel-title">Add New Equipment</h2>
-          <form id="equipment-form">
-            <input type="hidden" id="edit-eq-id">
-            <div class="form-group">
-              <label>Equipment Name</label>
-              <input type="text" id="eq-name" placeholder="e.g. Caterpillar Excavator" required>
-            </div>
-            <div class="form-group">
-              <label>Equipment Code</label>
-              <input type="text" id="eq-code" placeholder="e.g. EQ-10020" required>
-            </div>
-            <div class="form-group">
-              <label>Entry Project (Incoming Project)</label>
-              <input type="text" id="eq-project" placeholder="e.g. Dabaa Project" required>
-            </div>
-            <div class="form-group">
-              <label>Entry Date</label>
-              <input type="date" id="eq-entry-date" required>
-            </div>
-            <div class="form-group">
-              <label>Exit Date</label>
-              <input type="date" id="eq-exit-date">
-            </div>
-            <div class="form-group">
-              <label>Exit Project (Destination Project)</label>
-              <input type="text" id="eq-exit-project" placeholder="e.g. Monorail Site">
-            </div>
-            <div class="form-group">
-              <label>Condition / Status Report</label>
-              <input type="text" id="eq-report" placeholder="e.g. Hydraulic pump issue">
-            </div>
-            <div class="form-group">
-              <label>Department / Workshop Stage</label>
-              <select id="eq-dept" required>
-                <option value="Mechanics">Mechanics</option>
-                <option value="Denting">Denting</option>
-                <option value="Blacksmith">Blacksmith</option>
-                <option value="Welding">Welding</option>
-                <option value="Painting">Painting</option>
-                <option value="Electric">Electric</option>
-                <option value="Testing">Testing</option>
-              </select>
-            </div>
-            <div class="form-group">
-              <label>Current Status</label>
-              <select id="eq-status" required>
-                <option value="Ready">Ready</option>
-                <option value="In Progress">In Progress</option>
-                <option value="Waiting">Waiting</option>
-                <option value="Delay">Delay</option>
-                <option value="External">External</option>
-                <option value="Dispatched">Dispatched / Exited</option>
-              </select>
-            </div>
-            <button type="submit" class="btn-add" id="form-submit-btn">+ Add Equipment</button>
-            <button type="button" class="btn-cancel-edit" id="cancel-edit-btn" onclick="cancelEdit()">Cancel Edit</button>
-          </form>
-        </div>
-
-        <!-- Transfer Requests Panel (Appears right under Add Equipment for Admin) -->
-        <div class="admin-requests-panel" id="adminRequestsContainer">
-          <h3>
-            <span>📥 Transfer Requests</span>
-            <span class="req-badge-count" id="reqBadgeCount">0</span>
-          </h3>
-          <div id="transferRequestsList">
-            <p style="font-size: 11px; color: var(--text-muted); text-align: center; padding: 10px;">No pending requests.</p>
+      <!-- Form: Add / Edit Equipment -->
+      <div class="form-panel" id="admin-form-panel">
+        <h2 id="form-panel-title">Add New Equipment</h2>
+        <form id="equipment-form">
+          <input type="hidden" id="edit-eq-id">
+          <div class="form-group">
+            <label>Equipment Name</label>
+            <input type="text" id="eq-name" placeholder="e.g. Caterpillar Excavator" required>
           </div>
-        </div>
+          <div class="form-group">
+            <label>Equipment Code</label>
+            <input type="text" id="eq-code" placeholder="e.g. EQ-10020" required>
+          </div>
+          <div class="form-group">
+            <label>Entry Project (Incoming Project)</label>
+            <input type="text" id="eq-project" placeholder="e.g. Dabaa Project" required>
+          </div>
+          <div class="form-group">
+            <label>Entry Date</label>
+            <input type="date" id="eq-entry-date" required>
+          </div>
+          <div class="form-group">
+            <label>Exit Date</label>
+            <input type="date" id="eq-exit-date">
+          </div>
+          <div class="form-group">
+            <label>Exit Project (Destination Project - Moves to Archive)</label>
+            <input type="text" id="eq-exit-project" placeholder="e.g. Monorail Site">
+          </div>
+          <div class="form-group">
+            <label>Condition / Status Report</label>
+            <input type="text" id="eq-report" placeholder="e.g. Hydraulic pump issue / Overhaul">
+          </div>
+          <div class="form-group">
+            <label>Department / Workshop Stage</label>
+            <select id="eq-dept" required>
+              <option value="Mechanics">Mechanics</option>
+              <option value="Denting">Denting</option>
+              <option value="Blacksmith">Blacksmith</option>
+              <option value="Welding">Welding</option>
+              <option value="Painting">Painting</option>
+              <option value="Electric">Electric</option>
+              <option value="Testing">Testing</option>
+            </select>
+          </div>
+          <div class="form-group">
+            <label>Current Status</label>
+            <select id="eq-status" required>
+              <option value="Ready">Ready</option>
+              <option value="In Progress">In Progress</option>
+              <option value="Waiting">Waiting</option>
+              <option value="Delay">Delay</option>
+              <option value="External">External</option>
+              <option value="Dispatched">Dispatched / Exited</option>
+            </select>
+          </div>
+          <button type="submit" class="btn-add" id="form-submit-btn">+ Add Equipment</button>
+          <button type="button" class="btn-cancel-edit" id="cancel-edit-btn" onclick="cancelEdit()">Cancel Edit</button>
+        </form>
       </div>
 
       <!-- Equipment Table Panel -->
       <div class="table-panel">
         <div class="view-tabs">
-          <button class="tab-btn active" id="tab-active-btn" onclick="switchView('active')">🛠️ Active Workshop</button>
-          <button class="tab-btn" id="tab-archive-btn" onclick="switchView('archive')">📦 Dispatched Archive</button>
+          <button class="tab-btn active" id="tab-active-btn" onclick="switchView('active')">🛠️ Active Workshop Equipment</button>
+          <button class="tab-btn" id="tab-archive-btn" onclick="switchView('archive')">📦 Dispatched / Archive List</button>
         </div>
 
         <div class="table-panel-header">
           <h2 id="table-main-title">Active Equipment Inventory</h2>
           <div class="filters-wrapper">
             <div class="filter-container">
-              <label for="name-filter">Type:</label>
-              <input type="text" id="name-filter" placeholder="Search..." oninput="render()">
+              <label for="name-filter">Equipment Type:</label>
+              <input type="text" id="name-filter" placeholder="Search Type..." oninput="render()">
             </div>
             <div class="filter-container">
               <label for="code-filter">Code:</label>
-              <input type="text" id="code-filter" placeholder="Search..." oninput="render()">
+              <input type="text" id="code-filter" placeholder="Search Code..." oninput="render()">
             </div>
             <div class="filter-container">
               <label for="project-filter">Project:</label>
               <select id="project-filter" onchange="render()">
-                <option value="All">All</option>
+                <option value="All">All Projects</option>
               </select>
             </div>
             <div class="filter-container">
               <label for="dept-filter">Dept:</label>
               <select id="dept-filter" onchange="render()">
-                <option value="All">All</option>
+                <option value="All">All Departments</option>
                 <option value="Mechanics">Mechanics</option>
                 <option value="Denting">Denting</option>
                 <option value="Blacksmith">Blacksmith</option>
@@ -720,7 +658,7 @@
               <th>Equipment Name</th>
               <th>Code / Report</th>
               <th>Project Details</th>
-              <th>Dates</th>
+              <th>Entry / Exit Dates</th>
               <th>Duration</th>
               <th>Department</th>
               <th>Status</th>
@@ -740,24 +678,24 @@
         <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px; flex-wrap: wrap; gap: 15px;">
           <h2 style="margin: 0;">Monthly PMV Performance Statistics</h2>
           
-          <form id="monthly-form" style="display: flex; gap: 8px; align-items: center; flex-wrap: wrap;">
+          <form id="monthly-form" style="display: flex; gap: 10px; align-items: center; flex-wrap: wrap;">
             <div style="display: flex; flex-direction: column;">
               <label style="font-size: 10px; font-weight: bold; color: var(--text-muted);">Month</label>
-              <input type="month" id="m-month" required style="padding: 5px; border: 1px solid var(--border-color); border-radius: 4px; font-size: 11px;">
+              <input type="month" id="m-month" required style="padding: 5px; border: 1px solid var(--border-color); border-radius: 4px; font-size: 12px;">
             </div>
             <div style="display: flex; flex-direction: column;">
               <label style="font-size: 10px; font-weight: bold; color: var(--text-muted);">Received</label>
-              <input type="number" id="m-received" min="0" placeholder="0" required style="width: 65px; padding: 5px; border: 1px solid var(--border-color); border-radius: 4px; font-size: 11px;">
+              <input type="number" id="m-received" min="0" placeholder="0" required style="width: 75px; padding: 5px; border: 1px solid var(--border-color); border-radius: 4px; font-size: 12px;">
             </div>
             <div style="display: flex; flex-direction: column;">
               <label style="font-size: 10px; font-weight: bold; color: var(--text-muted);">Repaired</label>
-              <input type="number" id="m-repaired" min="0" placeholder="0" required style="width: 65px; padding: 5px; border: 1px solid var(--border-color); border-radius: 4px; font-size: 11px;">
+              <input type="number" id="m-repaired" min="0" placeholder="0" required style="width: 75px; padding: 5px; border: 1px solid var(--border-color); border-radius: 4px; font-size: 12px;">
             </div>
             <div style="display: flex; flex-direction: column;">
               <label style="font-size: 10px; font-weight: bold; color: var(--text-muted);">Dispatched</label>
-              <input type="number" id="m-dispatched" min="0" placeholder="0" required style="width: 65px; padding: 5px; border: 1px solid var(--border-color); border-radius: 4px; font-size: 11px;">
+              <input type="number" id="m-dispatched" min="0" placeholder="0" required style="width: 75px; padding: 5px; border: 1px solid var(--border-color); border-radius: 4px; font-size: 12px;">
             </div>
-            <button type="submit" class="btn-add" style="margin-top: 14px; padding: 6px 10px; width: auto; font-size: 11px;">+ Log Month</button>
+            <button type="submit" class="btn-add" style="margin-top: 15px; padding: 6px 12px; width: auto;">+ Log Month</button>
           </form>
         </div>
 
@@ -782,15 +720,15 @@
       <h2>📅 Cumulative Totals Since Start of Year (2026)</h2>
       <div class="annual-stats-grid">
         <div class="annual-item">
-          <span>Total Entered Workshop</span>
+          <span>Total Entered Workshop (From Monthly Stats)</span>
           <strong id="annual-entered-count">0</strong>
         </div>
         <div class="annual-item exited">
-          <span>Total Dispatched / Exited</span>
+          <span>Total Dispatched / Exited (From Monthly Stats)</span>
           <strong id="annual-exited-count">0</strong>
         </div>
         <div class="annual-item ready-done">
-          <span>Total Repaired / Ready</span>
+          <span>Total Repaired / Ready (From Monthly Stats)</span>
           <strong id="annual-ready-count">0</strong>
         </div>
       </div>
@@ -812,11 +750,11 @@
               <th>Code / Report</th>
               <th>Equipment Name</th>
               <th>Project Details</th>
-              <th>Dates</th>
+              <th>Entry / Exit Dates</th>
               <th>Duration</th>
               <th>Department</th>
               <th>Status</th>
-              <th id="modal-action-header">Action</th>
+              <th id="modal-action-header">Action / Request</th>
             </tr>
           </thead>
           <tbody id="modalTableBody">
@@ -852,7 +790,6 @@
 
     let currentRole = "admin";
     let currentView = "active";
-    let transferRequestsList = [];
     
     const USERS = {
       "mahmoud osama": { pass: "OSS123456", role: "admin" },
@@ -866,334 +803,168 @@
       "Welding": "https://api.iconify.design/fluent-emoji-flat:fire.svg",
       "Painting": "https://api.iconify.design/fluent-emoji-flat:artist-palette.svg",
       "Electric": "https://api.iconify.design/fluent-emoji-flat:high-voltage.svg",
-      "Testing": "https://api.iconify.design/fluent-emoji-flat:stopwatch.svg"
+      "Testing": "https://api.iconify.design/fluent-emoji-flat:test-tube.svg"
     };
 
     let equipmentList = [];
     let monthlyStats = [];
+    let hasLoadedRequests = false;
 
-    // تحميل البيانات الحية من فايربيس (Realtime Sync)
-    function initFirebaseSync() {
-      // مزامنة جدول المعدات
-      onSnapshot(collection(db, "equipment"), (snapshot) => {
-        equipmentList = snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
-        updateProjectFilterDropdown();
-        render();
-        updateSummaryCards();
-        updateTicker();
-      });
+    const tableBody = document.getElementById("equipment-table-body");
+    const monthlyTableBody = document.getElementById("monthly-table-body");
+    const form = document.getElementById("equipment-form");
+    const monthlyForm = document.getElementById("monthly-form");
+    const adminPanel = document.getElementById("admin-form-panel");
+    const mainGrid = document.getElementById("main-grid");
 
-      // مزامنة الإحصائيات الشهرية
-      onSnapshot(collection(db, "monthlyStats"), (snapshot) => {
-        monthlyStats = snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
-        renderMonthlyTable();
-        updateAnnualTotals();
-      });
-
-      // مزامنة طلبات نقل المعدات (Transfer Requests)
-      onSnapshot(collection(db, "transferRequests"), (snapshot) => {
-        transferRequestsList = snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
-        renderTransferRequests();
-      });
-    }
-
-    window.addEventListener('DOMContentLoaded', () => {
-      initFirebaseSync();
-    });
-
-    function showNotification(msg) {
-      const banner = document.getElementById("notification-banner");
-      document.getElementById("notification-text").innerText = msg;
-      banner.style.display = "block";
-      setTimeout(() => { banner.style.display = "none"; }, 4000);
-    }
-
-    function handleRoleChange(selectObj) {
-      const val = selectObj.value;
-      if (val === "viewer") {
-        document.getElementById("adminPasswordModal").style.display = "flex";
-        selectObj.value = "admin";
-      } else {
-        setRole("admin");
-      }
-    }
-
-    function setRole(role) {
-      currentRole = role;
-      const adminSidebar = document.getElementById("admin-sidebar-panel");
-      const mainGrid = document.getElementById("main-grid");
-      const actionCols = document.querySelectorAll(".admin-action-col");
-
-      if (role === "viewer") {
-        adminSidebar.style.display = "none";
-        mainGrid.classList.add("full-width");
-        actionCols.forEach(el => el.style.display = "none");
-        document.getElementById("role-select").value = "viewer";
-      } else {
-        adminSidebar.style.display = "flex";
-        mainGrid.classList.remove("full-width");
-        actionCols.forEach(el => el.style.display = "table-cell");
-        document.getElementById("role-select").value = "admin";
-      }
+    onSnapshot(collection(db, "equipment"), (snapshot) => {
+      equipmentList = snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
+      updateDropdowns();
       render();
-    }
-
-    function closeAdminPassModal() {
-      document.getElementById("adminPasswordModal").style.display = "none";
-      document.getElementById("prompt-admin-pass").value = "";
-      document.getElementById("prompt-error").style.display = "none";
-    }
-
-    document.getElementById("admin-auth-form").addEventListener("submit", (e) => {
-      e.preventDefault();
-      const pass = document.getElementById("prompt-admin-pass").value;
-      if (pass === "OSS123456") {
-        closeAdminPassModal();
-        setRole("viewer");
-        showNotification("Switched to Team Member (View Only) mode successfully.");
-      } else {
-        document.getElementById("prompt-error").style.display = "block";
-      }
+    }, (error) => {
+      console.error("Error fetching equipment: ", error);
     });
 
-    function logoutSystem() {
-      document.getElementById("login-overlay").style.display = "flex";
-      document.getElementById("login-user").value = "";
-      document.getElementById("login-pass").value = "";
-    }
-
-    document.getElementById("login-form").addEventListener("submit", (e) => {
-      e.preventDefault();
-      const u = document.getElementById("login-user").value.trim().toLowerCase();
-      const p = document.getElementById("login-pass").value;
-
-      if (USERS[u] && USERS[u].pass === p) {
-        document.getElementById("login-overlay").style.display = "none";
-        document.getElementById("login-error").style.display = "none";
-        setRole(USERS[u].role);
-        showNotification(`Welcome back, ${u === 'mahmoud osama' ? 'Eng. Mahmoud Osama' : 'Team Member'}!`);
-      } else {
-        document.getElementById("login-error").style.display = "block";
-      }
+    onSnapshot(collection(db, "monthly_stats"), (snapshot) => {
+      monthlyStats = snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
+      monthlyStats.sort((a, b) => (a.month || "").localeCompare(b.month || ""));
+      renderMonthly();
+      render();
+    }, (error) => {
+      console.error("Error fetching monthly stats: ", error);
     });
 
-    function switchView(view) {
-      currentView = view;
+    // Real-time listener for transfer requests to notify Admin
+    onSnapshot(collection(db, "transfer_requests"), (snapshot) => {
+      if (!hasLoadedRequests) {
+        hasLoadedRequests = true;
+        return; // Skip initial load trigger
+      }
+      snapshot.docChanges().forEach((change) => {
+        if (change.type === "added") {
+          const req = change.doc.data();
+          if (currentRole === 'admin') {
+            showNotification(`🚨 New Transfer Request!\nRequested by: ${req.userName}\nEquipment: ${req.eqName} (${req.eqCode})\nDestination: ${req.destProject}`);
+          }
+        }
+      });
+    });
+
+    function showNotification(message) {
+      const banner = document.getElementById("notification-banner");
+      const textSpan = document.getElementById("notification-text");
+      textSpan.innerHTML = message.replace(/\n/g, '<br>');
+      banner.style.display = "block";
+      setTimeout(() => {
+        banner.style.display = "none";
+      }, 7000);
+    }
+
+    window.manualSaveData = function() {
+      alert("✅ Data is synchronized and saved automatically with Firebase cloud!");
+    }
+
+    window.switchView = function(viewType) {
+      currentView = viewType;
       const activeBtn = document.getElementById("tab-active-btn");
       const archiveBtn = document.getElementById("tab-archive-btn");
-      const title = document.getElementById("table-main-title");
+      const mainTitle = document.getElementById("table-main-title");
 
-      if (view === "active") {
+      if (viewType === 'active') {
         activeBtn.classList.add("active");
         archiveBtn.classList.remove("active");
-        title.innerText = "Active Equipment Inventory";
+        mainTitle.textContent = "Active Equipment Inventory";
       } else {
         archiveBtn.classList.add("active");
         activeBtn.classList.remove("active");
-        title.innerText = "Dispatched / Archive Equipment List";
+        mainTitle.textContent = "Dispatched / Archive List";
       }
       render();
-    }
-
-    function calculateDuration(entryDate, exitDate, status) {
-      if (!entryDate) return "-";
-      const start = new Date(entryDate);
-      const end = (status === "Dispatched" && exitDate) ? new Date(exitDate) : new Date();
-      const diffTime = Math.abs(end - start);
-      const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
-      return `${diffDays} Days`;
-    }
-
-    function updateProjectFilterDropdown() {
-      const select = document.getElementById("project-filter");
-      const currentVal = select.value;
-      const projects = [...new Set(equipmentList.map(item => item.project))].filter(Boolean);
-      
-      select.innerHTML = `<option value="All">All</option>` + 
-        projects.map(p => `<option value="${p}">${p}</option>`).join('');
-      
-      if (projects.includes(currentVal)) select.value = currentVal;
-    }
-
-    function render() {
-      const tbody = document.getElementById("equipment-table-body");
-      const nameFilter = document.getElementById("name-filter").value.toLowerCase();
-      const codeFilter = document.getElementById("code-filter").value.toLowerCase();
-      const projectFilter = document.getElementById("project-filter").value;
-      const deptFilter = document.getElementById("dept-filter").value;
-
-      let filtered = equipmentList.filter(item => {
-        const isDispatched = item.status === "Dispatched";
-        if (currentView === "active" && isDispatched) return false;
-        if (currentView === "archive" && !isDispatched) return false;
-
-        const matchesName = (item.name || "").toLowerCase().includes(nameFilter);
-        const matchesCode = (item.code || "").toLowerCase().includes(codeFilter);
-        const matchesProj = projectFilter === "All" || item.project === projectFilter;
-        const matchesDept = deptFilter === "All" || item.dept === deptFilter;
-
-        return matchesName && matchesCode && matchesProj && matchesDept;
-      });
-
-      if (filtered.length === 0) {
-        tbody.innerHTML = `<tr><td colspan="8" style="text-align: center; padding: 25px; color: var(--text-muted); font-style: italic;">No equipment records found.</td></tr>`;
-        return;
-      }
-
-      tbody.innerHTML = filtered.map(item => `
-        <tr>
-          <td><strong>${item.name}</strong></td>
-          <td>
-            <div class="code-cell-container">
-              <span>${item.code}</span>
-              <span class="eq-report-text">${item.report || 'No notes'}</span>
-            </div>
-          </td>
-          <td>
-            <div class="project-cell-container">
-              <span class="project-tag">In: ${item.project}</span>
-              ${item.exitProject ? `<span class="exit-project-tag">To: ${item.exitProject}</span>` : ''}
-            </div>
-          </td>
-          <td>
-            <div style="font-size: 10px;">
-              <div>Entry: ${item.entryDate || '-'}</div>
-              <div>Exit: ${item.exitDate || '-'}</div>
-            </div>
-          </td>
-          <td><span class="duration-badge">${calculateDuration(item.entryDate, item.exitDate, item.status)}</span></td>
-          <td>
-            <div class="dept-cell">
-              <img src="${deptIcons[item.dept] || ''}" class="dept-icon-img" alt="">
-              <span>${item.dept}</span>
-            </div>
-          </td>
-          <td><span class="status-badge status-${item.status.replace(/\s+/g, '-')}">${item.status}</span></td>
-          <td class="admin-action-col">
-            <div class="action-btns">
-              ${currentRole === 'admin' ? `
-                <button class="btn-edit" onclick="editEquipment('${item.id}')">Edit</button>
-                <button class="btn-delete" onclick="deleteEquipment('${item.id}')">Del</button>
-              ` : `
-                <button class="btn-request" onclick="openRequestModal('${item.code}', '${item.name}')">Request</button>
-              `}
-            </div>
-          </td>
-        </tr>
-      `).join('');
-    }
-
-    function updateSummaryCards() {
-      document.getElementById("total-count").innerText = equipmentList.length;
-      document.getElementById("ready-count").innerText = equipmentList.filter(i => i.status === "Ready").length;
-      document.getElementById("progress-count").innerText = equipmentList.filter(i => i.status === "In Progress").length;
-      document.getElementById("waiting-count").innerText = equipmentList.filter(i => i.status === "Waiting").length;
-      document.getElementById("delay-count").innerText = equipmentList.filter(i => i.status === "Delay").length;
-      document.getElementById("external-count").innerText = equipmentList.filter(i => i.status === "External").length;
-      document.getElementById("dispatched-count").innerText = equipmentList.filter(i => i.status === "Dispatched").length;
-    }
-
-    function updateTicker() {
-      const tickerContent = document.getElementById("ticker-content");
-      if (equipmentList.length === 0) {
-        tickerContent.innerHTML = `<span class="ticker-item">No active updates in workshop.</span>`;
-        return;
-      }
-
-      tickerContent.innerHTML = equipmentList.map(i => `
-        <span class="ticker-item">
-          <b>${i.name} (${i.code})</b> - Dept: ${i.dept} - Status: <span class="${i.status === 'Ready' ? 'ready-highlight' : 'dispatch-highlight'}">${i.status}</span> (Project: ${i.project})
-        </span>
-      `).join('');
-    }
-
-    // عرض وإدارة طلبات النقل الخاصة بالفريق تحت خانة Add Equipment
-    function renderTransferRequests() {
-      const container = document.getElementById("transferRequestsList");
-      const badge = document.getElementById("reqBadgeCount");
-      
-      badge.innerText = transferRequestsList.length;
-
-      if (transferRequestsList.length === 0) {
-        container.innerHTML = `<p style="font-size: 11px; color: var(--text-muted); text-align: center; padding: 10px;">No pending requests.</p>`;
-        return;
-      }
-
-      container.innerHTML = transferRequestsList.map(req => `
-        <div class="req-item-card">
-          <p><b>Equipment:</b> ${req.name} (${req.code})</p>
-          <p><b>From Viewer:</b> ${req.userName}</p>
-          <p><b>Destination:</b> <span style="color: #004070; font-weight: bold;">${req.destProj}</span></p>
-          <div class="req-actions">
-            <button class="btn-req-approve" onclick="approveTransferRequest('${req.id}', '${req.code}', '${req.destProj}')">Approve</button>
-            <button class="btn-req-reject" onclick="rejectTransferRequest('${req.id}')">Reject</button>
-          </div>
-        </div>
-      `).join('');
-    }
-
-    // قبول طلب النقل (يقوم بتحديث المشروع الوجهة وحالة المعدة أو نقلها للأرشيف)
-    window.approveTransferRequest = async function(reqId, eqCode, destProj) {
-      try {
-        // ابحث عن المعدة المرتبطة بالكود
-        const targetEq = equipmentList.find(i => i.code === eqCode);
-        if (targetEq) {
-          await updateDoc(doc(db, "equipment", targetEq.id), {
-            exitProject: destProj,
-            status: "Dispatched",
-            exitDate: new Date().toISOString().split('T')[0]
-          });
-        }
-        // حذف الطلب من قائمة الطلبات المعلقة
-        await deleteDoc(doc(db, "transferRequests", reqId));
-        showNotification("Transfer request approved and equipment updated successfully!");
-      } catch (err) {
-        console.error("Error approving request:", err);
-      }
     };
 
-    // رفض طلب النقل
-    window.rejectTransferRequest = async function(reqId) {
-      try {
-        await deleteDoc(doc(db, "transferRequests", reqId));
-        showNotification("Transfer request rejected.");
-      } catch (err) {
-        console.error("Error rejecting request:", err);
-      }
-    };
+    function updateDropdowns() {
+      const projectFilter = document.getElementById("project-filter");
+      const currentSelectedProject = projectFilter.value;
 
-    document.getElementById("equipment-form").addEventListener("submit", async (e) => {
+      const uniqueProjects = [...new Set(equipmentList.map(item => item.project))].sort();
+
+      projectFilter.innerHTML = '<option value="All">All Projects</option>' + 
+        uniqueProjects.map(p => `<option value="${p}">${p}</option>`).join('');
+      projectFilter.value = uniqueProjects.includes(currentSelectedProject) ? currentSelectedProject : "All";
+    }
+
+    form.addEventListener("submit", async (e) => {
       e.preventDefault();
-      const editId = document.getElementById("edit-eq-id").value;
-      const eqData = {
-        name: document.getElementById("eq-name").value,
-        code: document.getElementById("eq-code").value,
-        project: document.getElementById("eq-project").value,
-        entryDate: document.getElementById("eq-entry-date").value,
-        exitDate: document.getElementById("eq-exit-date").value,
-        exitProject: document.getElementById("eq-exit-project").value,
-        report: document.getElementById("eq-report").value,
-        dept: document.getElementById("eq-dept").value,
-        status: document.getElementById("eq-status").value
-      };
+      if (currentRole !== "admin") {
+        alert("Access Denied: Only Admin can add or modify equipment.");
+        return;
+      }
+
+      const id = document.getElementById("edit-eq-id").value;
+      const name = document.getElementById("eq-name").value.trim();
+      const code = document.getElementById("eq-code").value.trim();
+      const project = document.getElementById("eq-project").value.trim();
+      const entryDate = document.getElementById("eq-entry-date").value;
+      const exitDate = document.getElementById("eq-exit-date").value;
+      const exitProject = document.getElementById("eq-exit-project").value.trim();
+      const report = document.getElementById("eq-report").value.trim();
+      const dept = document.getElementById("eq-dept").value;
+      const status = document.getElementById("eq-status").value;
+
+      const equipmentData = { name, code, project, entryDate, exitDate, exitProject, report, dept, status };
 
       try {
-        if (editId) {
-          await updateDoc(doc(db, "equipment", editId), eqData);
-          showNotification("Equipment updated successfully!");
-          cancelEdit();
+        if (id) {
+          await updateDoc(doc(db, "equipment", id), equipmentData);
+          showNotification(`Equipment data updated successfully for: ${code}`);
         } else {
-          await addDoc(collection(db, "equipment"), eqData);
-          showNotification("New equipment added successfully!");
-          e.target.reset();
+          await addDoc(collection(db, "equipment"), equipmentData);
+          showNotification(`New equipment added successfully: ${code}`);
         }
+        form.reset();
+        cancelEdit();
       } catch (err) {
         console.error("Error saving equipment:", err);
+        alert("Failed to save data. Please check connection.");
       }
     });
 
+    monthlyForm.addEventListener("submit", async (e) => {
+      e.preventDefault();
+      if (currentRole !== "admin") {
+        alert("Access Denied: Only Admin can log monthly stats.");
+        return;
+      }
+
+      const month = document.getElementById("m-month").value;
+      const received = Number(document.getElementById("m-received").value);
+      const repaired = Number(document.getElementById("m-repaired").value);
+      const dispatched = Number(document.getElementById("m-dispatched").value);
+
+      try {
+        await addDoc(collection(db, "monthly_stats"), { month, received, repaired, dispatched });
+        monthlyForm.reset();
+        showNotification(`Monthly stats logged successfully for ${month}!`);
+      } catch (err) {
+        console.error("Error saving monthly stats:", err);
+        alert("Failed to save monthly stats.");
+      }
+    });
+
+    window.deleteMonthly = async function(id) {
+      if (currentRole !== "admin") return;
+      if (confirm("Are you sure you want to delete this monthly log?")) {
+        try {
+          await deleteDoc(doc(db, "monthly_stats", id));
+          showNotification("Monthly log deleted successfully.");
+        } catch (err) {
+          console.error("Error deleting monthly log:", err);
+        }
+      }
+    };
+
     window.editEquipment = function(id) {
-      const item = equipmentList.find(i => i.id === id);
+      const item = equipmentList.find(e => e.id === id);
       if (!item) return;
 
       document.getElementById("edit-eq-id").value = item.id;
@@ -1207,159 +978,36 @@
       document.getElementById("eq-dept").value = item.dept || "Mechanics";
       document.getElementById("eq-status").value = item.status || "Ready";
 
-      document.getElementById("form-panel-title").innerText = "Edit Equipment Details";
-      document.getElementById("form-submit-btn").innerText = "💾 Save Changes";
+      document.getElementById("form-panel-title").textContent = "Edit Equipment";
+      document.getElementById("form-submit-btn").textContent = "💾 Save Changes";
       document.getElementById("cancel-edit-btn").style.display = "block";
-      window.scrollTo({ top: 0, behavior: 'smooth' });
+      adminPanel.scrollIntoView({ behavior: 'smooth' });
     };
 
     window.cancelEdit = function() {
-      document.getElementById("equipment-form").reset();
+      form.reset();
       document.getElementById("edit-eq-id").value = "";
-      document.getElementById("form-panel-title").innerText = "Add New Equipment";
-      document.getElementById("form-submit-btn").innerText = "+ Add Equipment";
+      document.getElementById("form-panel-title").textContent = "Add New Equipment";
+      document.getElementById("form-submit-btn").textContent = "+ Add Equipment";
       document.getElementById("cancel-edit-btn").style.display = "none";
     };
 
     window.deleteEquipment = async function(id) {
-      if (confirm("Are you sure you want to delete this equipment record?")) {
+      if (currentRole !== "admin") return;
+      if (confirm("Are you sure you want to delete this equipment?")) {
         try {
           await deleteDoc(doc(db, "equipment", id));
-          showNotification("Equipment deleted successfully.");
+          showNotification("Equipment removed from records.");
         } catch (err) {
-          console.error("Error deleting:", err);
+          console.error("Error deleting equipment:", err);
         }
       }
-    };
-
-    window.manualSaveData = function() {
-      showNotification("All changes are automatically synced and saved to Firebase Cloud!");
-    };
-
-    document.getElementById("monthly-form").addEventListener("submit", async (e) => {
-      e.preventDefault();
-      const monthVal = document.getElementById("m-month").value;
-      const receivedVal = parseInt(document.getElementById("m-received").value) || 0;
-      const repairedVal = parseInt(document.getElementById("m-repaired").value) || 0;
-      const dispatchedVal = parseInt(document.getElementById("m-dispatched").value) || 0;
-
-      try {
-        await addDoc(collection(db, "monthlyStats"), {
-          month: monthVal,
-          received: receivedVal,
-          repaired: repairedVal,
-          dispatched: dispatchedVal
-        });
-        showNotification("Monthly statistics logged successfully!");
-        e.target.reset();
-      } catch (err) {
-        console.error("Error adding monthly stat:", err);
-      }
-    });
-
-    function renderMonthlyTable() {
-      const tbody = document.getElementById("monthly-table-body");
-      if (monthlyStats.length === 0) {
-        tbody.innerHTML = `<tr><td colspan="5" style="text-align: center; padding: 15px; color: var(--text-muted);">No monthly statistics logged yet.</td></tr>`;
-        return;
-      }
-
-      tbody.innerHTML = monthlyStats.map(m => `
-        <tr>
-          <td><strong>${m.month}</strong></td>
-          <td>${m.received}</td>
-          <td>${m.repaired}</td>
-          <td>${m.dispatched}</td>
-          <td class="admin-action-col">
-            <button class="btn-delete" onclick="deleteMonthlyStat('${m.id}')">Delete</button>
-          </td>
-        </tr>
-      `).join('');
-    }
-
-    window.deleteMonthlyStat = async function(id) {
-      if (confirm("Delete this monthly statistic record?")) {
-        await deleteDoc(doc(db, "monthlyStats", id));
-        showNotification("Monthly record deleted.");
-      }
-    };
-
-    function updateAnnualTotals() {
-      let totalRec = 0, totalDisp = 0, totalRep = 0;
-      monthlyStats.forEach(m => {
-        totalRec += Number(m.received) || 0;
-        totalDisp += Number(m.dispatched) || 0;
-        totalRep += Number(m.repaired) || 0;
-      });
-
-      document.getElementById("annual-entered-count").innerText = totalRec;
-      document.getElementById("annual-exited-count").innerText = totalDisp;
-      document.getElementById("annual-ready-count").innerText = totalRep;
-    }
-
-    window.openModal = function(statusFilter) {
-      const modal = document.getElementById("statusModal");
-      const title = document.getElementById("modalTitle");
-      const tbody = document.getElementById("modalTableBody");
-      const emptyMsg = document.getElementById("emptyModalMsg");
-      const actionHeader = document.getElementById("modal-action-header");
-
-      title.innerText = statusFilter === 'All' ? "All Equipment List" : `Equipment List - Status: ${statusFilter}`;
-      actionHeader.innerText = currentRole === 'admin' ? "Action" : "Request Transfer";
-
-      let filtered = statusFilter === 'All' ? equipmentList : equipmentList.filter(i => i.status === statusFilter);
-
-      if (filtered.length === 0) {
-        tbody.innerHTML = "";
-        emptyMsg.style.display = "block";
-      } else {
-        emptyMsg.style.display = "none";
-        tbody.innerHTML = filtered.map(item => `
-          <tr>
-            <td>
-              <div class="code-cell-container">
-                <span>${item.code}</span>
-                <span class="eq-report-text">${item.report || 'No notes'}</span>
-              </div>
-            </td>
-            <td><strong>${item.name}</strong></td>
-            <td>
-              <div class="project-cell-container">
-                <span class="project-tag">In: ${item.project}</span>
-                ${item.exitProject ? `<span class="exit-project-tag">To: ${item.exitProject}</span>` : ''}
-              </div>
-            </td>
-            <td>
-              <div style="font-size: 10px;">
-                <div>Entry: ${item.entryDate || '-'}</div>
-                <div>Exit: ${item.exitDate || '-'}</div>
-              </div>
-            </td>
-            <td><span class="duration-badge">${calculateDuration(item.entryDate, item.exitDate, item.status)}</span></td>
-            <td>${item.dept}</td>
-            <td><span class="status-badge status-${item.status.replace(/\s+/g, '-')}">${item.status}</span></td>
-            <td>
-              ${currentRole === 'admin' ? `
-                <button class="btn-delete" onclick="closeModal(); deleteEquipment('${item.id}')">Delete</button>
-              ` : `
-                <button class="btn-request" onclick="closeModal(); openRequestModal('${item.code}', '${item.name}')">Request</button>
-              `}
-            </td>
-          </tr>
-        `).join('');
-      }
-
-      modal.style.display = "flex";
-    };
-
-    window.closeModal = function() {
-      document.getElementById("statusModal").style.display = "none";
     };
 
     window.openRequestModal = function(code, name) {
       document.getElementById("req-eq-code").value = code;
       document.getElementById("req-eq-name").value = name;
-      document.getElementById("req-eq-info").innerText = `Equipment: ${name} (Code: ${code})`;
+      document.getElementById("req-eq-info").textContent = `Equipment: ${name} (${code})`;
       document.getElementById("req-user-name").value = "";
       document.getElementById("req-dest-project").value = "";
       document.getElementById("requestModal").style.display = "flex";
@@ -1369,29 +1017,325 @@
       document.getElementById("requestModal").style.display = "none";
     };
 
-    // إرسال طلب النقل وحفظه في Firebase ليظهر مباشرة للأدمن تحت خانة الإضافة
-    document.getElementById("equipment-request-form").addEventListener("submit", async (e) => {
+    const equipmentRequestForm = document.getElementById("equipment-request-form");
+    equipmentRequestForm.addEventListener("submit", async (e) => {
       e.preventDefault();
-      const code = document.getElementById("req-eq-code").value;
-      const name = document.getElementById("req-eq-name").value;
-      const userName = document.getElementById("req-user-name").value;
-      const destProj = document.getElementById("req-dest-project").value;
+      const userName = document.getElementById("req-user-name").value.trim();
+      const destProject = document.getElementById("req-dest-project").value.trim();
+      const eqCode = document.getElementById("req-eq-code").value;
+      const eqName = document.getElementById("req-eq-name").value;
 
       try {
-        await addDoc(collection(db, "transferRequests"), {
-          code: code,
-          name: name,
-          userName: userName,
-          destProj: destProj,
+        await addDoc(collection(db, "transfer_requests"), {
+          userName,
+          destProject,
+          eqCode,
+          eqName,
           timestamp: new Date().toISOString()
         });
-        showNotification(`Transfer request for [${name}] submitted to Admin successfully!`);
+
         closeRequestModal();
+        showNotification(`✅ Transfer Request Sent Successfully!\nRequested by: ${userName}\nEquipment: ${eqName} (${eqCode})\nDestination: ${destProject}`);
       } catch (err) {
-        console.error("Error submitting transfer request:", err);
-        alert("Failed to submit request.");
+        console.error("Error sending request:", err);
+        alert("Failed to send request. Please check connection.");
       }
     });
+
+    function calculateDuration(entryDate, exitDate, status) {
+      if (!entryDate) return "N/A";
+      const start = new Date(entryDate);
+      const end = (status === 'Dispatched' && exitDate) ? new Date(exitDate) : new Date();
+      const diffTime = Math.abs(end - start);
+      const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
+      return `${diffDays} Days`;
+    }
+
+    function render() {
+      const nameFilterVal = document.getElementById("name-filter").value.toLowerCase().trim();
+      const codeFilterVal = document.getElementById("code-filter").value.toLowerCase().trim();
+      const projectFilterVal = document.getElementById("project-filter").value;
+      const deptFilterVal = document.getElementById("dept-filter").value;
+
+      let filtered = equipmentList.filter(item => {
+        const isArchived = (item.status === 'Dispatched');
+        if (currentView === 'active') {
+          return !isArchived;
+        } else {
+          return isArchived;
+        }
+      });
+
+      if (nameFilterVal) filtered = filtered.filter(i => (i.name || "").toLowerCase().includes(nameFilterVal));
+      if (codeFilterVal) filtered = filtered.filter(i => (i.code || "").toLowerCase().includes(codeFilterVal) || (i.report || "").toLowerCase().includes(codeFilterVal));
+      if (projectFilterVal !== "All") filtered = filtered.filter(i => i.project === projectFilterVal);
+      if (deptFilterVal !== "All") filtered = filtered.filter(i => i.dept === deptFilterVal);
+
+      tableBody.innerHTML = filtered.map(item => {
+        const icon = deptIcons[item.dept] || "";
+        const duration = calculateDuration(item.entryDate, item.exitDate, item.status);
+        
+        let actionHtml = "";
+        if (currentRole === 'admin') {
+          actionHtml = `<div class="action-btns"><button class="btn-edit" onclick="editEquipment('${item.id}')">Edit</button><button class="btn-delete" onclick="deleteEquipment('${item.id}')">Delete</button></div>`;
+        } else {
+          if (item.status === 'Ready') {
+            actionHtml = `<button class="btn-request" onclick="openRequestModal('${item.code}', '${item.name}')">Request</button>`;
+          } else {
+            actionHtml = `<span style="font-size: 11px; color: var(--text-muted); font-style: italic;">Not Ready</span>`;
+          }
+        }
+
+        return `
+          <tr>
+            <td><strong>${item.name}</strong></td>
+            <td>
+              <div class="code-cell-container">
+                <span><strong>${item.code}</strong></span>
+                <span class="eq-report-text">${item.report || 'No report specified'}</span>
+              </div>
+            </td>
+            <td>
+              <div class="project-cell-container">
+                <span class="project-tag">📥 ${item.project}</span>
+                ${item.exitProject ? `<span class="exit-project-tag">📤 ${item.exitProject}</span>` : ''}
+              </div>
+            </td>
+            <td>
+              <div style="font-size: 11px;">
+                <div>In: ${item.entryDate || 'N/A'}</div>
+                <div>Out: ${item.exitDate || 'Active'}</div>
+              </div>
+            </td>
+            <td><span class="duration-badge">${duration}</span></td>
+            <td>
+              <div class="dept-cell">
+                <img src="${icon}" class="dept-icon-img" alt="${item.dept}">
+                <span>${item.dept}</span>
+              </div>
+            </td>
+            <td><span class="status-badge status-${item.status.replace(/\s+/g, '-')}">${item.status}</span></td>
+            <td class="admin-action-col">${actionHtml}</td>
+          </tr>
+        `;
+      }).join('');
+
+      const totalActive = equipmentList.filter(i => i.status !== 'Dispatched').length;
+      const readyCount = equipmentList.filter(i => i.status === 'Ready').length;
+      const progressCount = equipmentList.filter(i => i.status === 'In Progress').length;
+      const waitingCount = equipmentList.filter(i => i.status === 'Waiting').length;
+      const delayCount = equipmentList.filter(i => i.status === 'Delay').length;
+      const externalCount = equipmentList.filter(i => i.status === 'External').length;
+      const dispatchedCount = equipmentList.filter(i => i.status === 'Dispatched').length;
+
+      document.getElementById("total-count").textContent = totalActive;
+      document.getElementById("ready-count").textContent = readyCount;
+      document.getElementById("progress-count").textContent = progressCount;
+      document.getElementById("waiting-count").textContent = waitingCount;
+      document.getElementById("delay-count").textContent = delayCount;
+      document.getElementById("external-count").textContent = externalCount;
+      document.getElementById("dispatched-count").textContent = dispatchedCount;
+
+      updateTicker();
+    }
+
+    function renderMonthly() {
+      monthlyTableBody.innerHTML = monthlyStats.map(stat => `
+        <tr>
+          <td><strong>${stat.month}</strong></td>
+          <td>${stat.received}</td>
+          <td>${stat.repaired}</td>
+          <td>${stat.dispatched}</td>
+          <td class="admin-action-col">
+            <button class="btn-delete" onclick="deleteMonthly('${stat.id}')">Delete</button>
+          </td>
+        </tr>
+      `).join('');
+
+      const totalEntered = monthlyStats.reduce((sum, s) => sum + Number(s.received || 0), 0);
+      const totalExited = monthlyStats.reduce((sum, s) => sum + Number(s.dispatched || 0), 0);
+      const totalReady = monthlyStats.reduce((sum, s) => sum + Number(s.repaired || 0), 0);
+
+      document.getElementById("annual-entered-count").textContent = totalEntered;
+      document.getElementById("annual-exited-count").textContent = totalExited;
+      document.getElementById("annual-ready-count").textContent = totalReady;
+    }
+
+    function updateTicker() {
+      const tickerContent = document.getElementById("ticker-content");
+      if (equipmentList.length === 0) {
+        tickerContent.innerHTML = '<span class="ticker-item">No equipment currently registered in the central workshop.</span>';
+        return;
+      }
+
+      const tickerItemsHtml = equipmentList.map(item => {
+        const highlightClass = item.status === 'Ready' ? 'ready-highlight' : (item.status === 'Delay' ? 'dispatch-highlight' : '');
+        return `<span class="ticker-item">Equipment: <strong>${item.name}</strong> (${item.code}) - Project: ${item.project} - Status: <span class="${highlightClass}">${item.status}</span> (${item.dept})</span>`;
+      }).join(' &nbsp;&nbsp;|&nbsp;&nbsp; ');
+
+      tickerContent.innerHTML = tickerItemsHtml;
+    }
+
+    window.openModal = function(statusFilter) {
+      const modal = document.getElementById("statusModal");
+      const modalTitle = document.getElementById("modalTitle");
+      const modalTableBody = document.getElementById("modalTableBody");
+      const emptyMsg = document.getElementById("emptyModalMsg");
+      const actionHeader = document.getElementById("modal-action-header");
+
+      modalTitle.textContent = statusFilter === 'All' ? "All Active Equipment Inventory" : `Equipment List: ${statusFilter}`;
+      actionHeader.textContent = currentRole === 'admin' ? "Action" : "Request Transfer";
+
+      let matched = equipmentList.filter(i => {
+        if (statusFilter === 'Dispatched') return i.status === 'Dispatched';
+        if (i.status === 'Dispatched') return false;
+        if (statusFilter === 'All') return true;
+        return i.status === statusFilter;
+      });
+
+      if (matched.length === 0) {
+        modalTableBody.innerHTML = "";
+        emptyMsg.style.display = "block";
+      } else {
+        emptyMsg.style.display = "none";
+        modalTableBody.innerHTML = matched.map(item => {
+          const icon = deptIcons[item.dept] || "";
+          const duration = calculateDuration(item.entryDate, item.exitDate, item.status);
+          
+          let actionBtn = "";
+          if (currentRole === 'admin') {
+            actionBtn = `<button class="btn-edit" onclick="closeModal(); editEquipment('${item.id}')">Edit</button>`;
+          } else {
+            if (item.status === 'Ready') {
+              actionBtn = `<button class="btn-request" onclick="closeModal(); openRequestModal('${item.code}', '${item.name}')">Request</button>`;
+            } else {
+              actionBtn = `<span style="font-size: 11px; color: var(--text-muted); font-style: italic;">Not Ready</span>`;
+            }
+          }
+
+          return `
+            <tr>
+              <td>
+                <div class="code-cell-container">
+                  <span><strong>${item.code}</strong></span>
+                  <span class="eq-report-text">${item.report || ''}</span>
+                </div>
+              </td>
+              <td><strong>${item.name}</strong></td>
+              <td>
+                <div class="project-cell-container">
+                  <span class="project-tag">📥 ${item.project}</span>
+                  ${item.exitProject ? `<span class="exit-project-tag">📤 ${item.exitProject}</span>` : ''}
+                </div>
+              </td>
+              <td>
+                <div style="font-size: 11px;">
+                  <div>In: ${item.entryDate || 'N/A'}</div>
+                  <div>Out: ${item.exitDate || 'Active'}</div>
+                </div>
+              </td>
+              <td><span class="duration-badge">${duration}</span></td>
+              <td>
+                <div class="dept-cell">
+                  <img src="${icon}" class="dept-icon-img" alt="${item.dept}">
+                  <span>${item.dept}</span>
+                </div>
+              </td>
+              <td><span class="status-badge status-${item.status.replace(/\s+/g, '-')}">${item.status}</span></td>
+              <td>${actionBtn}</td>
+            </tr>
+          `;
+        }).join('');
+      }
+
+      modal.style.display = "flex";
+    };
+
+    window.closeModal = function() {
+      document.getElementById("statusModal").style.display = "none";
+    };
+
+    window.handleRoleChange = function(selectElem) {
+      const mode = selectElem.value;
+      if (mode === 'admin' && currentRole !== 'admin') {
+        selectElem.value = currentRole; 
+        document.getElementById("adminPasswordModal").style.display = "flex";
+        document.getElementById("prompt-admin-pass").value = "";
+        document.getElementById("prompt-error").style.display = "none";
+      } else if (mode === 'viewer') {
+        setAccessMode('viewer');
+      }
+    };
+
+    window.closeAdminPassModal = function() {
+      document.getElementById("adminPasswordModal").style.display = "none";
+      document.getElementById("role-select").value = currentRole;
+    };
+
+    const adminAuthForm = document.getElementById("admin-auth-form");
+    adminAuthForm.addEventListener("submit", (e) => {
+      e.preventDefault();
+      const passInput = document.getElementById("prompt-admin-pass").value.trim();
+      const promptError = document.getElementById("prompt-error");
+
+      if (passInput === USERS["mahmoud osama"].pass) {
+        document.getElementById("adminPasswordModal").style.display = "none";
+        setAccessMode("admin");
+        showNotification("Admin access verified successfully!");
+      } else {
+        promptError.style.display = "block";
+      }
+    });
+
+    window.logoutSystem = function() {
+      setAccessMode("viewer");
+      document.getElementById("login-user").value, document.getElementById("login-pass").value = "";
+      document.getElementById("login-overlay").style.display = "flex";
+    };
+
+    function setAccessMode(mode) {
+      currentRole = mode;
+      document.getElementById("role-select").value = mode;
+      const adminCols = document.querySelectorAll(".admin-action-col");
+      
+      if (mode === 'admin') {
+        adminPanel.style.display = "block";
+        mainGrid.classList.remove("full-width");
+        adminCols.forEach(el => el.style.display = "table-cell");
+      } else {
+        adminPanel.style.display = "none";
+        mainGrid.classList.add("full-width");
+        adminCols.forEach(el => el.style.display = "table-cell");
+      }
+      render();
+      renderMonthly();
+    }
+
+    const loginForm = document.getElementById("login-form");
+    loginForm.addEventListener("submit", (e) => {
+      e.preventDefault();
+      const usernameInput = document.getElementById("login-user").value.trim().toLowerCase();
+      const passwordInput = document.getElementById("login-pass").value.trim();
+      const errorMsg = document.getElementById("login-error");
+
+      if (USERS[usernameInput] && USERS[usernameInput].pass === passwordInput) {
+        const role = USERS[usernameInput].role;
+        document.getElementById("login-overlay").style.display = "none";
+        setAccessMode(role);
+        showNotification(`Welcome back, Eng. Mahmoud! Logged in successfully.`);
+      } else {
+        errorMsg.style.display = "block";
+      }
+    });
+
+    window.onclick = function(event) {
+      const modal = document.getElementById("statusModal");
+      const adminModal = document.getElementById("adminPasswordModal");
+      const requestModal = document.getElementById("requestModal");
+      if (event.target === modal) closeModal();
+      if (event.target === adminModal) closeAdminPassModal();
+      if (event.target === requestModal) closeRequestModal();
+    }
   </script>
 </body>
 </html>
