@@ -95,7 +95,7 @@
     .logo-container img { height: 45px; object-fit: contain; }
     .logo-container h1 { font-size: 20px; color: var(--navy); border-left: 2px solid #ccc; padding-left: 15px; font-weight: bold; }
     
-    .header-controls { display: flex; align-items: center; gap: 20px; }
+    .header-controls { display: flex; align-items: center; gap: 15px; }
     .role-switch { font-size: 13px; font-weight: bold; color: var(--navy); display: flex; align-items: center; gap: 8px; }
     .role-switch select { padding: 5px 10px; border-radius: 4px; border: 1px solid var(--border-color); font-weight: bold; }
     
@@ -114,6 +114,18 @@
       transition: background 0.2s;
     }
     .btn-save-global:hover { background: #27ae60; }
+
+    .btn-logout {
+      background: var(--status-delay);
+      color: #fff;
+      border: none;
+      padding: 6px 12px;
+      border-radius: 4px;
+      font-weight: bold;
+      font-size: 12px;
+      cursor: pointer;
+    }
+    .btn-logout:hover { background: #c0392b; }
 
     /* Live News Ticker Bar */
     .news-ticker-container {
@@ -429,6 +441,44 @@
     <div class="login-footer">Copyrighted design by Eng. Mahmoud Osama</div>
   </div>
 
+  <!-- Admin Password Prompt Modal -->
+  <div class="modal-overlay" id="adminPasswordModal">
+    <div class="login-card" style="margin: auto;">
+      <h2 style="color: var(--navy); margin-bottom: 15px; font-size: 16px;">Admin Authentication Required</h2>
+      <form id="admin-auth-form">
+        <div class="form-group">
+          <label>Enter Admin Password</label>
+          <input type="password" id="prompt-admin-pass" required placeholder="Password...">
+        </div>
+        <button type="submit" class="btn-add">Verify & Switch</button>
+        <button type="button" class="btn-logout" style="width: 100%; margin-top: 8px; padding: 8px;" onclick="closeAdminPassModal()">Cancel</button>
+        <p id="prompt-error" class="login-error">Incorrect Password!</p>
+      </form>
+    </div>
+  </div>
+
+  <!-- Equipment Request Modal (For Viewers) -->
+  <div class="modal-overlay" id="requestModal">
+    <div class="login-card" style="margin: auto;">
+      <h2 style="color: var(--navy); margin-bottom: 12px; font-size: 16px;">Request Equipment Transfer</h2>
+      <p id="req-eq-info" style="font-size: 12px; color: var(--text-muted); margin-bottom: 15px; font-weight: bold;"></p>
+      <form id="equipment-request-form">
+        <input type="hidden" id="req-eq-code">
+        <input type="hidden" id="req-eq-name">
+        <div class="form-group">
+          <label>Your Name (Team Member)</label>
+          <input type="text" id="req-user-name" required placeholder="Enter your full name...">
+        </div>
+        <div class="form-group">
+          <label>Destination Project Name</label>
+          <input type="text" id="req-dest-project" required placeholder="Enter project name...">
+        </div>
+        <button type="submit" class="btn-add">Submit Request</button>
+        <button type="button" class="btn-logout" style="width: 100%; margin-top: 8px; padding: 8px;" onclick="closeRequestModal()">Cancel</button>
+      </form>
+    </div>
+  </div>
+
   <!-- Header -->
   <header>
     <div class="logo-container">
@@ -444,6 +494,7 @@
           <option value="viewer">Team Member (View Only)</option>
         </select>
       </div>
+      <button class="btn-logout" onclick="logoutSystem()">Logout</button>
     </div>
   </header>
 
@@ -946,9 +997,31 @@
       }
     };
 
-    window.requestEquipment = function(code, name) {
-      showNotification(`Transfer request submitted successfully for (${name} - ${code})!`);
+    // فتح نافذة طلب النقل للمشاهدين (للمعدات Ready فقط)
+    window.openRequestModal = function(code, name) {
+      document.getElementById("req-eq-code").value = code;
+      document.getElementById("req-eq-name").value = name;
+      document.getElementById("req-eq-info").textContent = `Equipment: ${name} (${code})`;
+      document.getElementById("req-user-name").value = "";
+      document.getElementById("req-dest-project").value = "";
+      document.getElementById("requestModal").style.display = "flex";
     };
+
+    window.closeRequestModal = function() {
+      document.getElementById("requestModal").style.display = "none";
+    };
+
+    const equipmentRequestForm = document.getElementById("equipment-request-form");
+    equipmentRequestForm.addEventListener("submit", (e) => {
+      e.preventDefault();
+      const userName = document.getElementById("req-user-name").value.trim();
+      const destProject = document.getElementById("req-dest-project").value.trim();
+      const eqCode = document.getElementById("req-eq-code").value;
+      const eqName = document.getElementById("req-eq-name").value;
+
+      closeRequestModal();
+      showNotification(`✅ Transfer Request Sent Successfully!\nRequested by: ${userName}\nEquipment: ${eqName} (${eqCode})\nDestination: ${destProject}`);
+    });
 
     function calculateDuration(entryDate, exitDate, status) {
       if (!entryDate) return "N/A";
@@ -965,7 +1038,6 @@
       const projectFilterVal = document.getElementById("project-filter").value;
       const deptFilterVal = document.getElementById("dept-filter").value;
 
-      // تعديل شرط الفلترة ليعتمد بشكل حصري على الحالة Dispatched للأرشيف، لتبقى معدات الـ Ready في جدولها النشط
       let filtered = equipmentList.filter(item => {
         const isArchived = (item.status === 'Dispatched');
         if (currentView === 'active') {
@@ -983,9 +1055,18 @@
       tableBody.innerHTML = filtered.map(item => {
         const icon = deptIcons[item.dept] || "";
         const duration = calculateDuration(item.entryDate, item.exitDate, item.status);
-        const actionHtml = currentRole === 'admin' 
-          ? `<div class="action-btns"><button class="btn-edit" onclick="editEquipment('${item.id}')">Edit</button><button class="btn-delete" onclick="deleteEquipment('${item.id}')">Delete</button></div>`
-          : `<button class="btn-request" onclick="requestEquipment('${item.code}', '${item.name}')">Request</button>`;
+        
+        let actionHtml = "";
+        if (currentRole === 'admin') {
+          actionHtml = `<div class="action-btns"><button class="btn-edit" onclick="editEquipment('${item.id}')">Edit</button><button class="btn-delete" onclick="deleteEquipment('${item.id}')">Delete</button></div>`;
+        } else {
+          // للمشاهدين: زر الطلب يظهر فقط لو كانت الحالة Ready
+          if (item.status === 'Ready') {
+            actionHtml = `<button class="btn-request" onclick="openRequestModal('${item.code}', '${item.name}')">Request</button>`;
+          } else {
+            actionHtml = `<span style="font-size: 11px; color: var(--text-muted); font-style: italic;">Not Ready</span>`;
+          }
+        }
 
         return `
           <tr>
@@ -1085,7 +1166,7 @@
       const actionHeader = document.getElementById("modal-action-header");
 
       modalTitle.textContent = statusFilter === 'All' ? "All Active Equipment Inventory" : `Equipment List: ${statusFilter}`;
-      actionHeader.textContent = currentRole === 'admin' ? "Action" : "Request Equipment";
+      actionHeader.textContent = currentRole === 'admin' ? "Action" : "Request Transfer";
 
       let matched = equipmentList.filter(i => {
         if (statusFilter === 'Dispatched') return i.status === 'Dispatched';
@@ -1102,9 +1183,17 @@
         modalTableBody.innerHTML = matched.map(item => {
           const icon = deptIcons[item.dept] || "";
           const duration = calculateDuration(item.entryDate, item.exitDate, item.status);
-          const actionBtn = currentRole === 'admin'
-            ? `<button class="btn-edit" onclick="closeModal(); editEquipment('${item.id}')">Edit</button>`
-            : `<button class="btn-request" onclick="requestEquipment('${item.code}', '${item.name}')">Request</button>`;
+          
+          let actionBtn = "";
+          if (currentRole === 'admin') {
+            actionBtn = `<button class="btn-edit" onclick="closeModal(); editEquipment('${item.id}')">Edit</button>`;
+          } else {
+            if (item.status === 'Ready') {
+              actionBtn = `<button class="btn-request" onclick="closeModal(); openRequestModal('${item.code}', '${item.name}')">Request</button>`;
+            } else {
+              actionBtn = `<span style="font-size: 11px; color: var(--text-muted); font-style: italic;">Not Ready</span>`;
+            }
+          }
 
           return `
             <tr>
@@ -1150,7 +1239,41 @@
 
     window.handleRoleChange = function(selectElem) {
       const mode = selectElem.value;
-      setAccessMode(mode);
+      if (mode === 'admin' && currentRole !== 'admin') {
+        selectElem.value = currentRole; 
+        document.getElementById("adminPasswordModal").style.display = "flex";
+        document.getElementById("prompt-admin-pass").value = "";
+        document.getElementById("prompt-error").style.display = "none";
+      } else if (mode === 'viewer') {
+        setAccessMode('viewer');
+      }
+    };
+
+    window.closeAdminPassModal = function() {
+      document.getElementById("adminPasswordModal").style.display = "none";
+      document.getElementById("role-select").value = currentRole;
+    };
+
+    const adminAuthForm = document.getElementById("admin-auth-form");
+    adminAuthForm.addEventListener("submit", (e) => {
+      e.preventDefault();
+      const passInput = document.getElementById("prompt-admin-pass").value.trim();
+      const promptError = document.getElementById("prompt-error");
+
+      if (passInput === USERS["mahmoud osama"].pass) {
+        document.getElementById("adminPasswordModal").style.display = "none";
+        setAccessMode("admin");
+        showNotification("Admin access verified successfully!");
+      } else {
+        promptError.style.display = "block";
+      }
+    });
+
+    window.logoutSystem = function() {
+      setAccessMode("viewer");
+      document.getElementById("login-user").value = "";
+      document.getElementById("login-pass").value = "";
+      document.getElementById("login-overlay").style.display = "flex";
     };
 
     function setAccessMode(mode) {
@@ -1190,9 +1313,11 @@
 
     window.onclick = function(event) {
       const modal = document.getElementById("statusModal");
-      if (event.target === modal) {
-        closeModal();
-      }
+      const adminModal = document.getElementById("adminPasswordModal");
+      const requestModal = document.getElementById("requestModal");
+      if (event.target === modal) closeModal();
+      if (event.target === adminModal) closeAdminPassModal();
+      if (event.target === requestModal) closeRequestModal();
     }
   </script>
 </body>
